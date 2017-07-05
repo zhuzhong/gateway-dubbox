@@ -42,12 +42,44 @@
 
 ##示例
 
-前端请求url:http://localhost:8080/gateway/restapi/test
-	则网关的contextpath=gateway
-	后端服务的contextpath=restapi
-	根据后端服务的contextpath得到一组服务器列表，选其一，比如http://localhost:10000/,则后端的服务的完整api服务地址为：
-	http://localhost:10000/restapi/test
-	然后调用该接口获取相应的响应，返回前端即可
+
+
+
+1. 前端请求url:http://localhost:8080/gateway/restapi/test
+	
+
+
+- 则网关的contextpath=gateway
+	
+
+
+- 后端服务的contextpath=restapi
+
+
+- 根据后端服务的contextpath=restapi得到一组服务器列表，选其一，比如http://localhost:10000/,
+- 则后端的服务的完整api服务地址为：
+http://localhost:10000/restapi/test
+
+
+
+- 然后调用该接口获取相应的响应，返回前端即可
+
+
+
+##技术栈
+
+
+
+- springmvc
+- spring
+- servlet3异步
+- httpclient 4.5.3
+- zookeeper
+
+
+- apache-chain
+
+
 
 
 
