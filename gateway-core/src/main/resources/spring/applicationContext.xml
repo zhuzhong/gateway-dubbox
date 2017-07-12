@@ -106,4 +106,9 @@
 		<property name="zkServers" value="${zk.zkservers}"></property>
 	</bean>
 
+<!-- 虚拟服务注入注册中心 -->
+<bean class="com.aldb.gateway.service.support.DefaultVirtualServiceImpl">
+
+
+</bean>
 </beans>
