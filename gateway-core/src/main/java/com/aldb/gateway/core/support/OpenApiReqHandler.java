@@ -91,7 +91,7 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
              */
         } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
             logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
-            ApiInterface apiInfo = apiInterfaceService.findOne(bean.getApiId(), bean.getVersion());
+            ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
             
             if (apiInfo == null) {
                 return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(), bean.getVersion());

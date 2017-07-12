@@ -17,7 +17,7 @@ public interface ApiInterfaceService {
      * @param version
      * @return
      */
-    ApiInterface findOne(String apiId,String version); //这个接口方法暂定两个
+    ApiInterface queryApiInterfaceByApiId(String apiId,String version); //这个接口方法暂定两个
     
     
 }
