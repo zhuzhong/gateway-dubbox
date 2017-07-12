@@ -2,9 +2,18 @@
 
 
 
-##原因
+##目的
 
 我们服务框架使用的是dubbox(这个不用再多描述了），内部系统调用使用的是dubbo协议;而对于前端提供服务则使用rest协议。前端应用面临许多rest服务，为了解决调用的统一，所以需要一个网关系统。
+
+##为什么自己写
+
+
+
+- 对于api网关，现在已有框架可以解决该类问题，但是基于java语言开源的没有(除了zuul,也有可能我没有找到).
+- 不会C++,无法扩展nginx
+- 不会C,无法扩展nginx
+- 不会LUA,无法扩展ngin
 
 
 
@@ -80,7 +89,9 @@ http://localhost:10000/restapi/test
 - apache-chain
 
 
+##扩展
 
+对于该网关系统，它所使用的web容器仍为tomcat。在实际业务部署的时候，前面仍会采用nginx作为反向代理服务器，主要是由于nginx的单机高并发能力，以及后端服务的高可用检测;
 
-
+如果采用这种结构部署，则该网关系统只能手动的进行扩缩（这个需要依赖于运维人员）。那么在系统需要紧急扩缩备战中，则会遇到问题。为了解决这类问题，通过扩展一个虚拟服务，将其注册到注册中心即可。具体请参考[https://github.com/zhuzhong/gateway-ngxcfg.git](https://github.com/zhuzhong/gateway-ngxcfg.git) gateway-ngxcfg
 
