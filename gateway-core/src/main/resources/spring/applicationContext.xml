@@ -106,9 +106,12 @@
 		<property name="zkServers" value="${zk.zkservers}"></property>
 	</bean>
 
-<!-- 虚拟服务注入注册中心 -->
-<bean class="com.aldb.gateway.service.support.DefaultVirtualServiceImpl">
-
-
-</bean>
+	<!-- 虚拟服务注入注册中心 -->
+	<bean class="com.aldb.gateway.service.support.DefaultVirtualServiceImpl">
+		<property name="rootPath" value="${virtual.zk.rootpath}"></property>
+		<property name="zkServers" value="${virtual.zk.zkservers}"></property>
+		<property name="context" value="${proj.contextPath}"></property>
+		<property name="ip" value="${virtual.ip}"></property>
+		<property name="port" value="${virtual.port}"></property>
+	</bean>
 </beans>

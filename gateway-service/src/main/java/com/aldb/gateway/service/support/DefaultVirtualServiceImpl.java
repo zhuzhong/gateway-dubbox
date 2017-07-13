@@ -13,24 +13,22 @@ import com.aldb.gateway.service.VirtualService;
  */
 public class DefaultVirtualServiceImpl implements VirtualService{
 
-    
-    private static final String GATEWAY = "/provider";
-
     private String rootPath;
 
     private String zkServers;
+    private String context;
     
+    private String ip;
+    private String port;
+    
+    private static final String GATEWAY = "/provider";   
     /*
      * 所遵守的注册格式 rootpath(持外节点）/gateway （持久节点）/服务信息（ip:port#context）(临时节点 ）(non-Javadoc)
      * @see com.aldb.gateway.service.VirtualService#regist()
      */
     
     
-    private String context;
-    
-    private String ip;
-    private String port;
-    
+
     @Override
     public void regist() {
         ZkClient zkClient;
