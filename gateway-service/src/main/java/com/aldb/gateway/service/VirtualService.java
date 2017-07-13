@@ -10,5 +10,5 @@ package com.aldb.gateway.service;
 public interface VirtualService {
 
     
-    public void regist();
+   public void regist();
 }

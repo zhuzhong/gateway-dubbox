@@ -13,7 +13,7 @@
 		<spring.version>4.2.1.RELEASE</spring.version>
 		<zkclient_version>0.1</zkclient_version>
 		<curator_version>2.5.0</curator_version>
-		<zookeeper_version>3.4.6</zookeeper_version>
+		<zookeeper_version>3.3.3</zookeeper_version>
 	</properties>
 	<dependencies>
 
@@ -108,13 +108,27 @@
 			<artifactId>spring-context-support</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+
+
 
 
 		<dependency>

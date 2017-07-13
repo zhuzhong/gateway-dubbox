@@ -107,7 +107,7 @@
 	</bean>
 
 	<!-- 虚拟服务注入注册中心 -->
-	<bean class="com.aldb.gateway.service.support.DefaultVirtualServiceImpl">
+	<bean class="com.aldb.gateway.service.support.DefaultVirtualServiceImpl" init-method="init">
 		<property name="rootPath" value="${virtual.zk.rootpath}"></property>
 		<property name="zkServers" value="${virtual.zk.zkservers}"></property>
 		<property name="context" value="${proj.contextPath}"></property>
