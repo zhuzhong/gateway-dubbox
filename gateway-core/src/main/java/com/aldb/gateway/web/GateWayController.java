@@ -28,8 +28,6 @@ public class GateWayController {
     @RequestMapping(value = {"/**",""},method = {RequestMethod.POST,RequestMethod.GET})
     public void service(HttpServletRequest request, HttpServletResponse response) {
        this.acceptHandler.acceptRequest(request, response);
-    	
-    	//System.out.println("oook");
     }
     
 }
