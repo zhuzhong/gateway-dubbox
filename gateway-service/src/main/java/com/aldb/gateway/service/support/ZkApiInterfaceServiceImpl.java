@@ -2,9 +2,8 @@ package com.aldb.gateway.service.support;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.I0Itec.zkclient.IZkChildListener;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aldb.gateway.common.entity.ApiInterface;
 import com.aldb.gateway.service.ApiInterfaceService;
-import com.aldb.gateway.service.LoadBalancerService;
+import com.aldb.gateway.service.LoadBalanceService;
 
 /**
  * @author Administrator
@@ -22,13 +21,28 @@ import com.aldb.gateway.service.LoadBalancerService;
  */
 public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
+    private static final String HTTP = "http";
+
+    @Override
+    public ApiInterface queryApiInterfaceByApiId(String apiId, String version) {
+        List<String> sets = hosts.get(apiId);
+        if (sets != null) {
+            String hostAddress = loadBalancerService.chooseOne(apiId, version, sets);
+            ApiInterface apiInterface = new ApiInterface();
+            apiInterface.setApiId(apiId);
+            apiInterface.setProtocol(HTTP);
+            apiInterface.setHostAddress(hostAddress);
+            return apiInterface;
+        }
+        return null;
+    }
+
+    // --------准备数据部分----------------------------------------------------
     private static Logger logger = LoggerFactory.getLogger(ZkApiInterfaceServiceImpl.class);
 
     private static final String REST = "rest";
 
     private static final String PROVIDERS = "providers";
-
-    private static final String HTTP = "http";
 
     private static final String REST_SLASH = REST + "://";
     private static final String SLASH = "/";
@@ -39,36 +53,22 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
     private String zkServers;
     private ZkClient zkClient;
 
-    private LoadBalancerService loadBalancerService;
+    private LoadBalanceService loadBalancerService;
 
     public void init() {
 
         zkClient = new ZkClient(zkServers, 5000);
-        if (!rootPath.startsWith("/")) {
-            rootPath = "/" + rootPath;
+        if (!rootPath.startsWith(SLASH)) {
+            rootPath = SLASH + rootPath;
         }
         runaway(zkClient, rootPath);
         if (loadBalancerService == null) {
-            loadBalancerService = new DefaultLoadBalancerServiceImpl();
+            loadBalancerService = new RandomLoadBalanceImpl();
         }
     }
 
-    public void setLoadBalancerService(LoadBalancerService loadBalancerService) {
+    public void setLoadBalancerService(LoadBalanceService loadBalancerService) {
         this.loadBalancerService = loadBalancerService;
-    }
-
-    @Override
-    public ApiInterface queryApiInterfaceByApiId(String apiId, String version) {
-        Set<String> sets = hosts.get(apiId);
-        if (sets != null) {
-            String hostAddress = loadBalancerService.chooseOne(sets);
-            ApiInterface apiInterface = new ApiInterface();
-            apiInterface.setApiId(apiId);
-            apiInterface.setProtocol(HTTP);
-            apiInterface.setHostAddress(hostAddress);
-            return apiInterface;
-        }
-        return null;
     }
 
     public void setRootPath(String rootPath) {
@@ -79,11 +79,11 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
         this.zkServers = zkServers;
     }
 
-    private static ConcurrentHashMap<String, Set<String>> hosts = new ConcurrentHashMap<String, Set<String>>();
+    private static final ConcurrentHashMap<String, List<String>> hosts = new ConcurrentHashMap<String, List<String>>();
 
     private void runaway(final ZkClient zkClient, final String path) {
         zkClient.unsubscribeAll();
-        ConcurrentHashMap<String, Set<String>> newHosts = new ConcurrentHashMap<String, Set<String>>();
+        ConcurrentHashMap<String, List<String>> newHosts = new ConcurrentHashMap<String, List<String>>();
         zkClient.subscribeChildChanges(path, new IZkChildListener() {
 
             public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
@@ -156,9 +156,9 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                                         ServiceProvider sp = new ServiceProvider(thirdChild);
                                         String contextPath = sp.getContextPath();
                                         String host = sp.getHost();
-                                        Set<String> hostSets = newHosts.get(contextPath);
+                                        List<String> hostSets = newHosts.get(contextPath);
                                         if (hostSets == null) {
-                                            hostSets = new HashSet<String>();
+                                            hostSets = new ArrayList<String>();
                                             newHosts.put(contextPath, hostSets);
                                         }
                                         hostSets.add(host);
@@ -172,27 +172,11 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
         }
 
-        hosts = newHosts;
-        // print(hosts);
+        synchronized (HTTP) {
+            hosts.clear();
+            hosts.putAll(newHosts);
+        }
     }
-
-    /*
-     * private void print(ConcurrentHashMap<String, Set<String>> hosts) {
-     * //System.out.println("----begin print-----");
-     * logger.info("----begin print-----"); if (hosts != null &&
-     * !hosts.isEmpty()) { for (Map.Entry<String, Set<String>> entry :
-     * hosts.entrySet()) { System.out.println(entry.getKey() + "---" +
-     * lineSet(entry.getValue())); } }
-     * 
-     * //System.out.println("----end print-----");
-     * logger.info("----end print-----"); }
-     */
-
-    /*
-     * private String lineSet(Set<String> sets) { StringBuilder sb = new
-     * StringBuilder(); for (String str : sets) { sb.append(str);
-     * sb.append(","); } return sb.toString(); }
-     */
 
     private static class ServiceProvider {
 

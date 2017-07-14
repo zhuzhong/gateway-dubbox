@@ -89,9 +89,18 @@ http://localhost:10000/restapi/test
 - apache-chain
 
 
-##扩展
+##伸缩性
 
 对于该网关系统，它所使用的web容器仍为tomcat。在实际业务部署的时候，前面仍会采用nginx作为反向代理服务器，主要是由于nginx的单机高并发能力，以及后端服务的高可用检测;
 
 如果采用这种结构部署，则该网关系统只能手动的进行扩缩（这个需要依赖于运维人员）。那么在系统需要紧急扩缩备战中，则会遇到问题。为了解决这类问题，通过扩展一个虚拟服务，将其注册到注册中心即可。具体请参考[https://github.com/zhuzhong/gateway-ngxcfg.git](https://github.com/zhuzhong/gateway-ngxcfg.git) gateway-ngxcfg
+
+目前这个虚拟服务注册的参数很少，可以想像nginx所需要一切参数都可以通过该服务进行初始化。通过nginx作为该网关系统的反向代理，可以通过管理平台更改相应的nginx参数，进行导流,系统下线等操作。
+
+
+##并发限制、限流
+
+增加了ControlConcurrentFilter、RatelimitFilter两个 filter,用于并发量限制及吞吐量限流。
+
+
 

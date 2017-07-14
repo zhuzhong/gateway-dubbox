@@ -13,6 +13,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.aldb.gateway.util.SystemConfigParaUtil;
+
 /**
  * 并发量filter限制
  * 
@@ -20,12 +22,6 @@ import javax.servlet.ServletResponse;
  *
  */
 public class ControlConcurrentFilter implements Filter {
-
-    private int concurrentLimit = 10000; // 并发上限
-
-    public void setConcurrentLimit(int concurrentLimit) {
-        this.concurrentLimit = concurrentLimit;
-    }
 
     /**
      * 这个个人认为应为单jvm的并发量控制，可以采用简单的方式
@@ -42,7 +38,8 @@ public class ControlConcurrentFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
         try {
-            if (times.incrementAndGet() > concurrentLimit) {
+            if (times.incrementAndGet() > SystemConfigParaUtil.getConcurrentLimit()) {
+                response.getWriter().write("please wait a moment...");
                 return;
             }
             chain.doFilter(request, response);

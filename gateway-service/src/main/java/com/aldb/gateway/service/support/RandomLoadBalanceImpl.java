@@ -3,19 +3,19 @@
  */
 package com.aldb.gateway.service.support;
 
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.aldb.gateway.service.LoadBalancerService;
+import com.aldb.gateway.service.LoadBalanceService;
 
 /**
  * @author Administrator
  *
  */
-public class DefaultLoadBalancerServiceImpl implements LoadBalancerService {
+public class RandomLoadBalanceImpl implements LoadBalanceService {
 
     @Override
-    public String chooseOne(Set<String> set) {
+    public String chooseOne(String apiId, String version,List<String> set) {
 
         return getRandomElement(set);
     }
@@ -29,7 +29,7 @@ public class DefaultLoadBalancerServiceImpl implements LoadBalancerService {
         return getRandom().nextInt(max);
     }
 
-    private String getRandomElement(Set<String> set) {
+    private String getRandomElement(List<String> set) {
         int rn = getRandomInt(set.size());
         int i = 0;
         String r = null;

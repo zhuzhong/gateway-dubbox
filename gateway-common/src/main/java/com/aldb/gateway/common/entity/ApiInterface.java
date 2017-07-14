@@ -3,14 +3,22 @@
  */
 package com.aldb.gateway.common.entity;
 
+import java.io.Serializable;
+
 /**
  * 后端服务接口信息
  * 
  * @author Administrator
  *
  */
-public class ApiInterface {
+public class ApiInterface implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8342440306741131051L;
+    
+    
     private String protocol;// 请求协议，分为http,https
     private String apiId;
     private String version;// 版本号
