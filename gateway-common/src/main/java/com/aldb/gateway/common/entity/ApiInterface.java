@@ -34,7 +34,6 @@ public class ApiInterface implements Serializable {
      */
     private String url; // 解析之后服务路径
 
-    // http://192.168.2.100:8089/targetUrl
     public String getUrl() {
         StringBuffer sb = new StringBuffer(protocol);
         sb.append("://");

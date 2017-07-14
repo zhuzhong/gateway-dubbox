@@ -106,13 +106,13 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
                 Map.Entry entry = (Map.Entry) entries.next();
                 key = (String) entry.getKey();
                 values = (String[]) entry.getValue();
-                if (key.equals(CommonCodeConstants.app_id) || key.equals(CommonCodeConstants.api_id)
+               /* if (key.equals(CommonCodeConstants.app_id) || key.equals(CommonCodeConstants.api_id)
                         || key.equals(CommonCodeConstants.version) || key.equals(CommonCodeConstants.app_token)
                         || key.equals(CommonCodeConstants.time_stamp) || key.equals(CommonCodeConstants.sign_method)
                         || key.equals(CommonCodeConstants.sign) || key.equals(CommonCodeConstants.device_token)
                         || key.equals(CommonCodeConstants.user_token) || key.equals(CommonCodeConstants.format)) {
                     continue;
-                }
+                }*/
                 String val = values[0];
                 try {
                     val = java.net.URLEncoder.encode(val, "utf-8");

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aldb.gateway.common.entity.ApiInterface;
+import com.aldb.gateway.common.util.CommonCodeConstants;
 import com.aldb.gateway.service.ApiInterfaceService;
 import com.aldb.gateway.service.LoadBalanceService;
 
@@ -21,8 +22,6 @@ import com.aldb.gateway.service.LoadBalanceService;
  */
 public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
-    private static final String HTTP = "http";
-
     @Override
     public ApiInterface queryApiInterfaceByApiId(String apiId, String version) {
         List<String> sets = hosts.get(apiId);
@@ -30,7 +29,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
             String hostAddress = loadBalancerService.chooseOne(apiId, version, sets);
             ApiInterface apiInterface = new ApiInterface();
             apiInterface.setApiId(apiId);
-            apiInterface.setProtocol(HTTP);
+            apiInterface.setProtocol(CommonCodeConstants.HTTP);
             apiInterface.setHostAddress(hostAddress);
             return apiInterface;
         }
@@ -46,7 +45,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
     private static final String REST_SLASH = REST + "://";
     private static final String SLASH = "/";
-    private static final String UTF_8 = "utf-8";
+    // private static final String UTF_8 = "utf-8";
 
     private String rootPath;
 
@@ -56,15 +55,15 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
     private LoadBalanceService loadBalancerService;
 
     public void init() {
-
         zkClient = new ZkClient(zkServers, 5000);
         if (!rootPath.startsWith(SLASH)) {
             rootPath = SLASH + rootPath;
         }
-        runaway(zkClient, rootPath);
+
         if (loadBalancerService == null) {
             loadBalancerService = new RandomLoadBalanceImpl();
         }
+        runaway(zkClient, rootPath);
     }
 
     public void setLoadBalancerService(LoadBalanceService loadBalancerService) {
@@ -172,7 +171,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
         }
 
-        synchronized (HTTP) {
+        synchronized (this) {
             hosts.clear();
             hosts.putAll(newHosts);
         }
@@ -182,21 +181,20 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
         private String host;
         private String contextPath;
-        private String demo;
+        private String provider;
 
-        public ServiceProvider(String demo) {
+        public ServiceProvider(String provider) {
             try {
-                this.demo = URLDecoder.decode(demo, UTF_8);
+                this.provider = URLDecoder.decode(provider, CommonCodeConstants.MDF_CHARSET_UTF_8);
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                this.demo = demo;
+                logger.error("地址解码错误{}", e);
+                this.provider = provider;
             }
             parse();
         }
 
         private void parse() {
-            String subString = demo.substring(REST_SLASH.length());
+            String subString = provider.substring(REST_SLASH.length());
 
             int indexOfFirstSlash = subString.indexOf(SLASH);
 

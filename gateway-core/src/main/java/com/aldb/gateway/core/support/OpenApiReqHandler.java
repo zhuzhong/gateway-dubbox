@@ -73,22 +73,9 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
         String requestMethod = bean.getRequestMethod();
 
         if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
-            /*
-             * Map<String, String> map = new TreeMap<String, String>();
-             * map.put("code", "200"); map.put("message",
-             * "The request has been accepted, the processing number is :" +
-             * bean.getDataId()); serviceRspData = JSON.toJSONString(map);
-             */
+            
         } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
-            /*
-             * ListOperations<String, String> lop = null; lop =
-             * redisTemplate.opsForList(); while
-             * (StringUtil.isNotEmpty(serviceRspData =
-             * lop.rightPop(bean.getDataId()))) {
-             * 
-             * return JSON.parseObject(serviceRspData,
-             * OpenApiRouteBeanVO.class).getServiceReqData(); }
-             */
+            
         } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
             logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
             ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
@@ -108,7 +95,7 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 logger.info(String.format("{service url:%s} ", url));
                 // String contentType =
                 // bean.getReqHeader().get(CONTENT_TYPE_KEY);
-                if (url.startsWith("https")) {
+                if (url.startsWith(CommonCodeConstants.HTTPS)) {
                     if (bean.getServiceGetReqData() == null) {
                         serviceRspData = apiHttpClientService.doHttpsGet(url,bean.getTraceId());
                     } else {
@@ -132,7 +119,7 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 logger.info(String.format("{serviceId:%s ,reqData:%s }", bean.getApiId(), reqData));
 
                 String contentType = bean.getReqHeader().get(CONTENT_TYPE_KEY);
-                if (url.startsWith("https://")) {
+                if (url.startsWith(CommonCodeConstants.HTTPS)) {
                     serviceRspData = apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(), contentType,bean.getTraceId());
                 } else {
                     serviceRspData = apiHttpClientService.doPost(url, bean.getServiceReqData(), contentType,bean.getTraceId());
@@ -143,43 +130,7 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 }
             }
         } else {
-            /*
-             * String reqData = bean.getServiceReqData(); // 请求的json格式数据参数 if
-             * (StringUtils.isNotBlank(reqData) && reqData.length() >
-             * this.maxReqDataLth) { reqData = reqData.substring(0,
-             * this.maxReqDataLth - 1); }
-             * log.info(String.format("{serviceId:%s ,reqData:%s }",
-             * bean.getApiId(), reqData));
-             * 
-             * ApiInterface apiInfo =
-             * apiInterfaceService.findOne(bean.getApiId(), bean.getVersion());
-             * String contentType = bean.getReqHeader().get(CONTENT_TYPE_KEY);
-             * 
-             * try { String url = apiInfo.getTargetUrl();
-             * log.info("{service url: " + url); if (url.startsWith("https://"))
-             * { serviceRspData = apiHttpClientService.doHttpsPost(url,
-             * bean.getServiceReqData(), contentType); } else { if
-             * (bean.getApiId().equals("bl.kd100.tms.backstatus") ||
-             * bean.getApiId().equals("bl.order.dc.tmsexpress")) {
-             * 
-             * url = this.generatePassUrl(apiInfo.getTargetUrl(),
-             * user.getSalt(), bean.getAccessToken(), bean.getTimeStamp());
-             * String params = this.getParams(user.getSalt(),
-             * bean.getAccessToken(), bean.getTimeStamp(),
-             * bean.getThdApiUrlParams()); serviceRspData =
-             * mutiHttpClientUtil.doPost(url, bean.getServiceReqData(),
-             * contentType, params);
-             * 
-             * } else { serviceRspData = apiHttpClientService.doPost(url,
-             * bean.getServiceReqData(), contentType); } } if
-             * ("timeout".equals(serviceRspData)) {
-             * log.error("invoke service: response is null!"); throw new
-             * OpenApiException(OauthErrorEnum.ERROR.getErrCode(),
-             * OauthErrorEnum.ERROR.getErrMsg()); } } catch (Exception e) {
-             * log.error("invoke service: " + e.getMessage()); throw new
-             * OpenApiException(OauthErrorEnum.ERROR.getErrCode(),
-             * OauthErrorEnum.ERROR.getErrMsg()); }
-             */
+            
         }
         return serviceRspData;
     }
