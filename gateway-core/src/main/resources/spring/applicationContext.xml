@@ -16,21 +16,21 @@
 	<context:property-placeholder
 		location="classpath*:config/thread_poll.properties" />
 
-	<!-- <context:component-scan base-package="com.aldb.gateway"> <context:exclude-filter 
+	<!-- <context:component-scan base-package="com.z.gateway"> <context:exclude-filter 
 		type="annotation" expression="org.springframework.stereotype.Controller" 
 		/> </context:component-scan> -->
 
 	<!-- 异步处理servlet3 -->
 	<bean id="openApiAcceptHandlerImpl"
-		class="com.aldb.gateway.handler.support.AsynOpenApiAcceptHandlerImpl">
+		class="com.z.gateway.handler.support.AsynOpenApiAcceptHandlerImpl">
 		<property name="idService" ref="idService" />
 		<property name="taskExecutor" ref="taskExecutor" />
 	</bean>
 
-	<!-- <bean id="openApiAcceptHandlerImpl" class="com.aldb.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
+	<!-- <bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
 		<property name="idService" ref="idService" /> <property name="poolHandler" 
 		ref="poolHandler" /> </bean> -->
-	<bean id="poolHandler" class="com.aldb.gateway.handler.support.ThreadPoolHandlerImpl">
+	<bean id="poolHandler" class="com.z.gateway.handler.support.ThreadPoolHandlerImpl">
 		<property name="taskExecutor" ref="taskExecutor" />
 	</bean>
 	<!-- 配置线程池 -->
@@ -50,7 +50,7 @@
 	<!-- bean id 取自CommonCodeConstants类 -->
 	<!-- api服务调用 -->
 	<bean name="openapi.service.HandlerExecuteTemplate"
-		class="com.aldb.gateway.handler.support.OpenApiServiceHandlerExecuteTemplateImpl">
+		class="com.z.gateway.handler.support.OpenApiServiceHandlerExecuteTemplateImpl">
 		<constructor-arg>
 			<list>
 				<ref bean="serviceReqAdapter" />
@@ -62,12 +62,12 @@
 
 
 
-	<bean id="serviceReqAdapter" class="com.aldb.gateway.core.support.OpenApiReqAdapter">
+	<bean id="serviceReqAdapter" class="com.z.gateway.core.support.OpenApiReqAdapter">
 		<property name="cacheService" ref="cacheServiceImpl"></property>
 		<property name="contextPath" value="${proj.contextPath}"></property>
 	</bean>
 
-	<bean id="serviceReqHandler" class="com.aldb.gateway.core.support.OpenApiReqHandler">
+	<bean id="serviceReqHandler" class="com.z.gateway.core.support.OpenApiReqHandler">
 		<property name="cacheService" ref="cacheServiceImpl"></property>
 		<property name="apiInterfaceService" ref="apiInterfaceServiceImpl"></property>
 		<property name="apiHttpClientService" ref="apiHttpClientService"></property>
@@ -75,39 +75,39 @@
 
 
 
-	<bean id="serviceRspHandler" class="com.aldb.gateway.core.support.OpenApiRspHandler">
+	<bean id="serviceRspHandler" class="com.z.gateway.core.support.OpenApiRspHandler">
 		<property name="cacheService" ref="cacheServiceImpl"></property>
 	</bean>
 	<!-- -->
 	<bean id="apiHttpClientService"
-		class="com.aldb.gateway.core.support.OpenApiHttpClientServiceImpl"
+		class="com.z.gateway.core.support.OpenApiHttpClientServiceImpl"
 		init-method="init" />
 
-	<!-- <bean id="apiHttpClientService" class="com.aldb.gateway.core.support.OpenApiHttpAsynClientServiceImpl" 
+	<!-- <bean id="apiHttpClientService" class="com.z.gateway.core.support.OpenApiHttpAsynClientServiceImpl" 
 		init-method="init" /> -->
 
 	<bean id="cacheServiceImpl"
-		class="com.aldb.gateway.service.support.DefaultCacheServiceImpl" />
+		class="com.z.gateway.service.support.DefaultCacheServiceImpl" />
 
 
 
 	<!-- 不依赖于外部系统即api的服务提供由硬编码完成 -->
-	<bean id="idService" class="com.aldb.gateway.service.support.DefaultIdServiceImpl" />
+	<bean id="idService" class="com.z.gateway.service.support.DefaultIdServiceImpl" />
 	<bean id="authenticationService"
-		class="com.aldb.gateway.service.support.DefaultAuthenticationServiceImpl" />
+		class="com.z.gateway.service.support.DefaultAuthenticationServiceImpl" />
 	<!-- <bean id="apiInterfaceServiceImpl" -->
-	<!-- class="com.aldb.gateway.service.support.TestApiInterfaceServiceImpl" 
+	<!-- class="com.z.gateway.service.support.TestApiInterfaceServiceImpl" 
 		/> -->
 
 	<bean id="apiInterfaceServiceImpl"
-		class="com.aldb.gateway.service.support.ZkApiInterfaceServiceImpl"
+		class="com.z.gateway.service.support.ZkApiInterfaceServiceImpl"
 		init-method="init">
 		<property name="rootPath" value="${zk.rootpath}"></property>
 		<property name="zkServers" value="${zk.zkservers}"></property>
 	</bean>
 
 	<!-- 虚拟服务注入注册中心 -->
-	<bean class="com.aldb.gateway.service.support.DefaultVirtualServiceImpl" init-method="init">
+	<bean class="com.z.gateway.service.support.DefaultVirtualServiceImpl" init-method="init">
 		<property name="rootPath" value="${virtual.zk.rootpath}"></property>
 		<property name="zkServers" value="${virtual.zk.zkservers}"></property>
 		<property name="context" value="${proj.contextPath}"></property>

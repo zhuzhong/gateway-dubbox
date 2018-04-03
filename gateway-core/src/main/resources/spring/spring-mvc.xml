@@ -18,7 +18,7 @@
 		ignore-unresolvable="true" location="classpath:config/**/cfg-app.properties" />
 
 
-	<context:component-scan base-package="com.aldb.gateway"
+	<context:component-scan base-package="com.z.gateway"
 		use-default-filters="false">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
@@ -118,7 +118,7 @@
 	<!-- 定义无Controller的path<->view直接映射 <mvc:view-controller path="/" view-name="redirect:${web.view.index}"/> -->
 
 
-	<bean id="exceptionHandler" class="com.aldb.gateway.exception.OpenApiExceptionHandler" />
+	<bean id="exceptionHandler" class="com.z.gateway.exception.OpenApiExceptionHandler" />
 
 
 
@@ -126,7 +126,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<bean
-				class="com.aldb.gateway.interceptor.OpenApiServiceParamValidateInterceptor" />
+				class="com.z.gateway.interceptor.OpenApiServiceParamValidateInterceptor" />
 		</mvc:interceptor>
 	
 	</mvc:interceptors>
