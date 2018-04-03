@@ -27,7 +27,7 @@ public class DefaultVirtualServiceImpl implements VirtualService {
      * 所遵守的注册格式 rootpath(持外节点）/gateway （持久节点）/服务信息（ip:port#context）(临时节点
      * ）(non-Javadoc)
      * 
-     * @see com.aldb.gateway.service.VirtualService#regist()
+     * @see com.z.gateway.service.VirtualService#regist()
      */
 
     public void init() {

@@ -99,7 +99,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
         });
 
         List<String> firstGeneration = zkClient.getChildren(path); // 二级节点
-                                                                   // /dubbo-online/com.aldb.test.Testapi
+                                                                   // /dubbo-online/com.z.test.Testapi
         if (firstGeneration != null && firstGeneration.size() > 0) {
             for (String child : firstGeneration) {
                 String firstNextPath = path + "/" + child;
@@ -119,7 +119,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                 });
 
                 List<String> secondGeneration = zkClient.getChildren(firstNextPath); // 三级子节点
-                                                                                     // /dubbo-online/com.aldb.test.Testapi/providers
+                                                                                     // /dubbo-online/com.z.test.Testapi/providers
                 if (secondGeneration != null && secondGeneration.size() > 0) {
                     for (String secondChild : secondGeneration) {
                         if (secondChild.startsWith(PROVIDERS)) {
@@ -142,15 +142,15 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                             });
 
                             List<String> thirdGeneration = zkClient.getChildren(secondNextPath);// 4级子节点
-                                                                                                // /dubbo-online/com.aldb.test.Testapi/rest://localhost:8080
+                                                                                                // /dubbo-online/com.z.test.Testapi/rest://localhost:8080
                             if (thirdGeneration != null && thirdGeneration.size() > 0) {
                                 for (String thirdChild : thirdGeneration) {
                                     if (thirdChild.startsWith(REST)) {
                                         /*
                                          * 样例
-                                         * rest://10.148.16.27:8480/magicmall/
-                                         * com.aldb.magicmall.facade.api.
-                                         * MallFacadeService
+                                         * rest://10.148.16.27:8480/demo/
+                                         * com.z.m.facade.api.
+                                         * DemoFacadeService
                                          */
                                         ServiceProvider sp = new ServiceProvider(thirdChild);
                                         String contextPath = sp.getContextPath();
