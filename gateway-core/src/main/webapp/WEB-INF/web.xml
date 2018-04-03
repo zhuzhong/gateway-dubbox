@@ -38,7 +38,7 @@
 
 	<filter>
 		<filter-name>requestFilter</filter-name>
-		<filter-class>com.aldb.gateway.filter.GateWayFilter</filter-class>
+		<filter-class>com.z.gateway.filter.GateWayFilter</filter-class>
 		<async-supported>true</async-supported>
 	</filter>
 
