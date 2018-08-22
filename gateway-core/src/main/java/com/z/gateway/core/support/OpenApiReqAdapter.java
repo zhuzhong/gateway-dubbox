@@ -6,14 +6,12 @@ import org.apache.commons.chain.Context;
 import org.apache.commons.lang3.StringUtils;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
-import com.z.gateway.common.exception.OauthErrorEnum;
 import com.z.gateway.common.resp.CommonResponse;
 import com.z.gateway.core.AbstractOpenApiHandler;
 import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
 import com.z.gateway.service.AuthenticationService;
-import com.z.gateway.service.CacheService;
 
 public class OpenApiReqAdapter extends AbstractOpenApiHandler {
 
@@ -21,7 +19,7 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
     	
     }
 
-    private OpenApiRouteBean initRouteBean(OpenApiHttpRequestBean request) {
+    private void initRouteBean(OpenApiHttpRequestBean request,OpenApiContext openApiContext) {
         OpenApiRouteBean routeBean = null;
         logger.info("iniApiRouteBean，这一步可以校验token,当然这个根据我们的实际情况去实现");
        /* String accessToken = request.getAppToken();
@@ -48,8 +46,8 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
             }
         }
         setRouteBeanApiId(request,routeBean);//计算apiid
-        cacheService.put(request.getRouteBeanKey(), routeBean);
-        return routeBean;
+        openApiContext.put(request.getRouteBeanKey(), routeBean);
+    
     }
 
     
@@ -80,11 +78,11 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
     		}
     	}
     }
-    private  CacheService cacheService;
+   /* private  CacheService cacheService;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
-    }
+    }*/
     
     private void setError(String errorCode, String errMsg, OpenApiHttpRequestBean requestBean) {
         CommonResponse<String> r = new CommonResponse<String>(false);
@@ -137,7 +135,7 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
         // 权限校验
         authRequestBean(request);
 
-        initRouteBean(httpSessionBean.getRequest()); // 初始化路由bean
+        initRouteBean(httpSessionBean.getRequest(),openApiContext); // 初始化路由bean
         if (logger.isDebugEnabled()) {
             logger.info(String.format(
                     "end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",

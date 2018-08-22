@@ -63,12 +63,12 @@
 
 
 	<bean id="serviceReqAdapter" class="com.z.gateway.core.support.OpenApiReqAdapter">
-		<property name="cacheService" ref="cacheServiceImpl"></property>
+<!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
 		<property name="contextPath" value="${proj.contextPath}"></property>
 	</bean>
 
 	<bean id="serviceReqHandler" class="com.z.gateway.core.support.OpenApiReqHandler">
-		<property name="cacheService" ref="cacheServiceImpl"></property>
+<!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
 		<property name="apiInterfaceService" ref="apiInterfaceServiceImpl"></property>
 		<property name="apiHttpClientService" ref="apiHttpClientService"></property>
 	</bean>
@@ -76,7 +76,7 @@
 
 
 	<bean id="serviceRspHandler" class="com.z.gateway.core.support.OpenApiRspHandler">
-		<property name="cacheService" ref="cacheServiceImpl"></property>
+<!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
 	</bean>
 	<!-- -->
 	<bean id="apiHttpClientService"
@@ -86,8 +86,8 @@
 	<!-- <bean id="apiHttpClientService" class="com.z.gateway.core.support.OpenApiHttpAsynClientServiceImpl" 
 		init-method="init" /> -->
 
-	<bean id="cacheServiceImpl"
-		class="com.z.gateway.service.support.DefaultCacheServiceImpl" />
+	<!-- <bean id="cacheServiceImpl"
+		class="com.z.gateway.service.support.DefaultCacheServiceImpl" /> -->
 
 
 

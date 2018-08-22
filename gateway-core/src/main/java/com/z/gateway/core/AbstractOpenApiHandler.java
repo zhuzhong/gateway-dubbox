@@ -53,7 +53,7 @@ public abstract class AbstractOpenApiHandler implements Command {
     }
 
     public void validateRequestHeader(OpenApiHttpRequestBean routeBean) {
-        String contentType = routeBean.getReqHeader().get(CONTENT_TYPE_KEY);
+        String contentType = (String)routeBean.getReqHeader().get(CONTENT_TYPE_KEY);
         if (StringUtils.isBlank(contentType)) {
             throw new OpenApiException(OauthErrorEnum.CONTENTTYPE.getErrCode(), OauthErrorEnum.CONTENTTYPE.getErrMsg());
         }

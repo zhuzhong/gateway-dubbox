@@ -13,6 +13,10 @@ import java.util.Properties;
  */
 public class OpenApiRouteBean implements Serializable{
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5676073409823449078L;
     private String traceId; // 内部定义的请求id
     private String requestUrl;
     

@@ -28,10 +28,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -43,10 +40,8 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
@@ -75,16 +70,16 @@ import org.apache.http.nio.util.HeapByteBufferAllocator;
 import org.apache.http.util.CharArrayBuffer;
 import org.apache.http.util.EntityUtils;
 
-import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.core.OpenApiHttpClientService;
 
 /**
  * @author sunff
  * 
  */
+@Deprecated
 public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientService {
 
-    public static void main(String args[]) {
+/*    public static void main(String args[]) {
         OpenApiHttpAsynClientServiceImpl p = new OpenApiHttpAsynClientServiceImpl();
 
         try {
@@ -101,11 +96,11 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
 
         // p.init();
         // System.out.println(p.doGet("https://www.baidu.com/", "1000"));
-    }
+    }*/
 
-    private CountDownLatch latch;
+   // private CountDownLatch latch;
 
-    public void test() throws IOException, InterruptedException {
+   /* public void test() throws IOException, InterruptedException {
         try {
             init();
             HttpGet httpGet = new HttpGet("https://www.baidu.com/");
@@ -113,17 +108,17 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
             httpAsyncClient.start();
             latch = new CountDownLatch(1);
             httpAsyncClient.execute(httpGet, new FutureCallbackImpl(body, latch));
-            /*
+            
              * try { System.in.read(); httpAsyncClient.close(); } catch
              * (IOException e) { // TODO Auto-generated catch block
              * e.printStackTrace(); }
-             */
+             
             latch.await();
         } finally {
             httpAsyncClient.close();
         }
     }
-
+*/
     public void init() {
         try {
             initHttpAsynClient();
@@ -350,10 +345,15 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
     }
 
     @Override
-    public String doGet(String webUrl, String traceId) {
+    public String doGet(String webUrl, Map<String,String> requestHeader) {
 
         final HttpGet httpget = new HttpGet(webUrl);
-        httpget.setHeader(CommonCodeConstants.TRACE_ID, traceId);
+        if(requestHeader!=null){
+        	requestHeader.forEach((k,v)->{
+        		httpget.setHeader(k,v);
+        	});
+        }
+        
 
         String body = "";
         try {
@@ -393,31 +393,31 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
     }
 
     @Override
-    public String doGet(String webUrl, Map<String, String> paramMap, String traceId) {
+    public String doGet(String webUrl, Map<String, String> paramMap, Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public String doHttpsGet(String webUrl, String traceId) {
+    public String doHttpsGet(String webUrl, Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
-        return doGet(webUrl, traceId);
+        return doGet(webUrl, requestHeader);
     }
 
     @Override
-    public String doHttpsGet(String webUrl, Map<String, String> paramMap, String traceId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String doHttpsPost(String url, String content, String contentType, String traceId) {
+    public String doHttpsGet(String webUrl, Map<String, String> paramMap,Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public String doPost(String url, String reqData, String contentType, String traceId) {
+    public String doHttpsPost(String url, String content, Map<String,String> requestHeader) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String doPost(String url, String reqData,Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;
     }

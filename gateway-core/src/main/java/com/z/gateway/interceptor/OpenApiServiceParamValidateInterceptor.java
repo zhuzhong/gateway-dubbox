@@ -134,7 +134,7 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
             String value = request.getHeader(key);
             map.put(key, value);
         }
-
+        
         return map;
     }
 

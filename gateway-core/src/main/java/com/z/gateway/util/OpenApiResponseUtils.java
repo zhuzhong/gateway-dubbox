@@ -52,7 +52,7 @@ public class OpenApiResponseUtils {
         while (entries.hasNext()) {
             Entry<String, String> entry = entries.next();
             if (entry.getKey().equals(CONTENT_TYPE_KEY) || entry.getKey().equals(HEADER_HOST_KEY)) {
-                response.addHeader(entry.getKey(), entry.getValue());
+                response.addHeader(entry.getKey(), entry.getValue()); //这里根据情况，把header返回用户         
             }
         }
         response.setHeader(HEADER_SERVER_KEY, null);
