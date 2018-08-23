@@ -1,6 +1,5 @@
 package com.z.gateway.util;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,9 +42,10 @@ public class OpenApiResponseUtils {
          * "Write body to response error, " + e.getMessage()); }
          */
         try (OutputStream os = response.getOutputStream()) {
-            byte[] bs = requestBean.getReturnContent();
+            String bs = requestBean.getReturnContent();
+            byte[] bsb= org.apache.commons.codec.binary.Base64.decodeBase64(bs);
             if (bs != null) {
-                os.write(bs);
+                os.write(bsb);
                 os.flush();
                 os.close();
             }
@@ -55,10 +55,8 @@ public class OpenApiResponseUtils {
         /*
          * finally { sessionMap.remove(requestBean.getReqId()); }
          */
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("requestId=%s request end,request=%s", requestBean.getTraceId(),
-                    JSON.toJSONString(requestBean)));
-        }
+        logger.debug(String.format("requestId=%s request end,request=%s", requestBean.getTraceId(),
+                JSON.toJSONString(requestBean)));
     }
 
     private static void setResponseHeader(HttpServletResponse response, Map<String, String> httpHeader) {

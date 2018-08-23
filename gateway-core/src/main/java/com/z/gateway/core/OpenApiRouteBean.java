@@ -152,14 +152,16 @@ public class OpenApiRouteBean implements Serializable{
 	}
 
 	
-	private byte[] returnContent;// 后端服务返回值
+	private String returnContent;// 后端服务返回值
 
-    public byte[] getReturnContent() {
+    public String getReturnContent() {
         return returnContent;
     }
 
-    public void setReturnContent(byte[] returnContent) {
+    public void setReturnContent(String returnContent) {
         this.returnContent = returnContent;
     }
+
+  
 	
 }

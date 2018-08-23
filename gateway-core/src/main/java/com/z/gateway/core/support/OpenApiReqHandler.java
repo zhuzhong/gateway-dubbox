@@ -102,9 +102,9 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
      * @param bean
      * @return
      */
-    private byte[] doInvokeBackService(OpenApiRouteBean bean) {
+    private String doInvokeBackService(OpenApiRouteBean bean) {
         logger.info("step5...");
-        byte[] serviceRspData = null; // 后端服务返回值
+       String serviceRspData = null; // 后端服务返回值
         String operationType = bean.getOperationType();
         String requestMethod = bean.getRequestMethod();
 
@@ -118,7 +118,7 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
 
             if (apiInfo == null) {
                 return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(),
-                        bean.getVersion()).getBytes();
+                        bean.getVersion());
             }
             apiInfo.setTargetUrl(bean.getTargetUrl());
             apiInfo.setRequestMethod(bean.getRequestMethod());

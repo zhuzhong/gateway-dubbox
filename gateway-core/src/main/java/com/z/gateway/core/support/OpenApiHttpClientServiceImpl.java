@@ -4,6 +4,7 @@
 package com.z.gateway.core.support;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,13 +147,13 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
     }
 
     @Override
-    public byte[] doHttpsPost(String url, String reqData, Map<String, String> requestHeader) {
+    public String doHttpsPost(String url, String reqData, Map<String, String> requestHeader) {
         return doPost(url, reqData, requestHeader);
     }
 
     @Override
-    public byte[] doPost(String url, String reqData, Map<String, String> requestHeader) {
-        byte[] body = null;
+    public String doPost(String url, String reqData, Map<String, String> requestHeader) {
+        String body = null;
         org.apache.http.client.methods.HttpPost httpPost = new org.apache.http.client.methods.HttpPost(url);
         // 将所有的header都传过去
         if (requestHeader != null && usingHead) {
@@ -198,11 +199,63 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         return body;
     }
 
-    private byte[] resbyte(HttpEntity entity) {
+    private String resbyte(HttpEntity entity) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             entity.writeTo(baos);
             byte[] bs = baos.toByteArray();
+            
+            FileOutputStream fos=new FileOutputStream("e:/test1.jpg");
+            fos.write(bs);
+            fos.flush();
+            fos.close();
+            
+          String result=  org.apache.commons.codec.binary.Base64.encodeBase64String(bs);
+          byte[] bsnew= org.apache.commons.codec.binary.Base64.decodeBase64(result);
+          
+            /*sun.misc.BASE64Encoder be=new sun.misc.BASE64Encoder();
+            String result=be.encode(bs);
+            
+            sun.misc.BASE64Decoder db=new sun.misc.BASE64Decoder();
+                byte[] bsnew=db.decodeBuffer(result);*/
+                fos=new FileOutputStream("e:/test2.jpg");
+                fos.write(bsnew);
+                fos.flush();
+                fos.close();
+            
+            
+            
+            return result;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    private byte[] resbyte2(HttpEntity entity) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            entity.writeTo(baos);
+            byte[] bs = baos.toByteArray();
+            
+            FileOutputStream fos=new FileOutputStream("e:/test1.jpg");
+            fos.write(bs);
+            fos.flush();
+            fos.close();
+            
+          String result=  org.apache.commons.codec.binary.Base64.encodeBase64String(bs);
+          byte[] bsnew= org.apache.commons.codec.binary.Base64.decodeBase64(result);
+          
+            /*sun.misc.BASE64Encoder be=new sun.misc.BASE64Encoder();
+            String result=be.encode(bs);
+            
+            sun.misc.BASE64Decoder db=new sun.misc.BASE64Decoder();
+                byte[] bsnew=db.decodeBuffer(result);*/
+                fos=new FileOutputStream("e:/test2.jpg");
+                fos.write(bsnew);
+                fos.flush();
+                fos.close();
+            
+            
+            
             return bs;
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -210,9 +263,9 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
     }
 
     @Override
-    public byte[] doGet(String webUrl, Map<String, String> requestHeader) {
+    public String doGet(String webUrl, Map<String, String> requestHeader) {
         logger.info(String.format("run doGet method,weburl=%s", webUrl));
-        byte[] body = null;
+        String body = null;
         org.apache.http.client.methods.HttpGet httpGet = new org.apache.http.client.methods.HttpGet(webUrl);
         // 将所有的header都传过去
         if (requestHeader != null && usingHead) {
@@ -256,7 +309,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
     }
 
     @Override
-    public byte[] doGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
+    public String doGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
         logger.info(String.format("run doGet method,weburl=%s", webUrl));
         String url = webUrl;
         // 设置编码格式
@@ -291,13 +344,13 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
     }
 
     @Override
-    public byte[] doHttpsGet(String webUrl, Map<String, String> requestHeader) { // https
+    public String doHttpsGet(String webUrl, Map<String, String> requestHeader) { // https
                                                                                  // 协议
         return doGet(webUrl, requestHeader);
     }
 
     @Override
-    public byte[] doHttpsGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
+    public String doHttpsGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
 
         return doGet(webUrl, paramMap, requestHeader);
     }

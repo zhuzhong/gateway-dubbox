@@ -308,6 +308,9 @@ public class OpenApiHttpRequestBean implements Serializable {
 	}
 
 	
+
+
+
     @Override
     public String toString() {
         return "OpenApiHttpRequestBean [reqHeader=" + reqHeader + ", requestUrl=" + requestUrl + ", operationType="
@@ -315,20 +318,25 @@ public class OpenApiHttpRequestBean implements Serializable {
                 + ", thdApiUrlParams=" + thdApiUrlParams + ", serviceReqData=" + serviceReqData + ", requestMethod="
                 + requestMethod + ", serviceGetReqData=" + serviceGetReqData + ", queryString=" + queryString
                 + ", requestTime=" + requestTime + ", responseTime=" + responseTime + ", elapsedTime=" + elapsedTime
-                + ", traceId=" + traceId  + ", appId=" + appId + ", appToken=" + appToken
-                + ", apiId=" + apiId + ", version=" + version + ", timeStamp=" + timeStamp + ", signMethod="
-                + signMethod + ", sign=" + sign + ", deviceToken=" + deviceToken + ", userToken=" + userToken
-                + ", format=" + format + ", returnContent=" + Arrays.toString(returnContent) + "]";
+                + ", traceId=" + traceId + ", appId=" + appId + ", appToken=" + appToken + ", apiId=" + apiId
+                + ", version=" + version + ", timeStamp=" + timeStamp + ", signMethod=" + signMethod + ", sign=" + sign
+                + ", deviceToken=" + deviceToken + ", userToken=" + userToken + ", format=" + format
+                + ", returnContent=" + returnContent + "]";
     }
 
 
-    private byte[] returnContent; //返回内容
 
-    public byte[] getReturnContent() {
+
+
+    private String returnContent; //返回内容
+
+    public String getReturnContent() {
         return returnContent;
     }
 
-    public void setReturnContent(byte[] returnContent) {
+    public void setReturnContent(String returnContent) {
         this.returnContent = returnContent;
     }
+
+    
 }
