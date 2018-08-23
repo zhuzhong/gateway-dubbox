@@ -14,6 +14,7 @@ import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
 import com.z.gateway.service.ApiInterfaceService;
+import com.z.gateway.util.StringResponseUtil;
 import com.z.gateway.util.UrlUtil;
 
 public class OpenApiReqHandler extends AbstractOpenApiHandler {
@@ -117,8 +118,9 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
             ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
 
             if (apiInfo == null) {
-                return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(),
-                        bean.getVersion());
+                return StringResponseUtil.encodeResp(
+                        String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(),
+                        bean.getVersion()).getBytes());
             }
             apiInfo.setTargetUrl(bean.getTargetUrl());
             apiInfo.setRequestMethod(bean.getRequestMethod());
@@ -134,16 +136,16 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
                     if (bean.getServiceGetReqData() == null) {
-                        serviceRspData = apiHttpClientService.doHttpsGet(url, bean.getReqHeader());
+                        return apiHttpClientService.doHttpsGet(url, bean.getReqHeader());
                     } else {
-                        serviceRspData = apiHttpClientService.doHttpsGet(url, bean.getServiceGetReqData(),
+                        return  apiHttpClientService.doHttpsGet(url, bean.getServiceGetReqData(),
                                 bean.getReqHeader());
                     }
                 } else {
                     if (bean.getServiceGetReqData() == null) {
-                        serviceRspData = apiHttpClientService.doGet(url, bean.getReqHeader());
+                        return apiHttpClientService.doGet(url, bean.getReqHeader());
                     } else {
-                        serviceRspData = apiHttpClientService.doGet(url, bean.getServiceGetReqData(),
+                        return apiHttpClientService.doGet(url, bean.getServiceGetReqData(),
                                 bean.getReqHeader());
                     }
                 }
@@ -160,15 +162,15 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 // String contentType =
                 // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
-                    serviceRspData = apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(),
+                    return apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(),
                             bean.getReqHeader());
                 } else {
-                    serviceRspData = apiHttpClientService.doPost(url, bean.getServiceReqData(), bean.getReqHeader());
+                    return apiHttpClientService.doPost(url, bean.getServiceReqData(), bean.getReqHeader());
                 }
-                if ("timeout".equals(serviceRspData)) {
+               /* if ("timeout".equals(serviceRspData)) {
                     logger.error("invoke service: response is null!");
                     throw new OpenApiException(OauthErrorEnum.ERROR.getErrCode(), OauthErrorEnum.ERROR.getErrMsg());
-                }
+                }*/
             }
         }
         return serviceRspData;
