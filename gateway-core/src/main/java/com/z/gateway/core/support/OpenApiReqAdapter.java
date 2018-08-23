@@ -3,10 +3,8 @@ package com.z.gateway.core.support;
 import java.util.Map;
 
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.StringUtils;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
-import com.z.gateway.common.resp.CommonResponse;
 import com.z.gateway.core.AbstractOpenApiHandler;
 import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
@@ -16,16 +14,18 @@ import com.z.gateway.service.AuthenticationService;
 public class OpenApiReqAdapter extends AbstractOpenApiHandler {
 
     public OpenApiReqAdapter() {
-    	
+
     }
 
-    private void initRouteBean(OpenApiHttpRequestBean request,OpenApiContext openApiContext) {
+    private void initRouteBean(OpenApiHttpRequestBean request, OpenApiContext openApiContext) {
         OpenApiRouteBean routeBean = null;
         logger.info("iniApiRouteBean，这一步可以校验token,当然这个根据我们的实际情况去实现");
-       /* String accessToken = request.getAppToken();
-        if (StringUtils.isBlank(accessToken)) {
-            throw new OpenApiException(OauthErrorEnum.ACCESSTOKEN.getErrCode(), OauthErrorEnum.ACCESSTOKEN.getErrMsg());
-        }*/
+        /*
+         * String accessToken = request.getAppToken(); if
+         * (StringUtils.isBlank(accessToken)) { throw new
+         * OpenApiException(OauthErrorEnum.ACCESSTOKEN.getErrCode(),
+         * OauthErrorEnum.ACCESSTOKEN.getErrMsg()); }
+         */
         logger.info("init 路由bean ");
         routeBean = new OpenApiRouteBean();
         routeBean.setTraceId(request.getTraceId()); // 内部请求id,利于跟踪
@@ -45,68 +45,59 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
                 routeBean.addThdApiUrlParams(maps.getKey(), maps.getValue());
             }
         }
-        setRouteBeanApiId(request,routeBean);//计算apiid
+        setRouteBeanApiId(request, routeBean);// 计算apiid
         openApiContext.put(request.getRouteBeanKey(), routeBean);
-    
+
     }
 
-    
-    
-    private void setRouteBeanApiId(OpenApiHttpRequestBean request,OpenApiRouteBean routeBean){
-    	String requestUrl=request.getRequestUrl();
-    	if(this.contextPath!=null){
-    		String subString=requestUrl.substring(requestUrl.indexOf(contextPath)+contextPath.length()+1);
-    		routeBean.setTargetUrl(subString);
-    		int index=subString.indexOf("/");
-    		if(index!=-1){
-    			String apiId=subString.substring(0,index);
-    			routeBean.setApiId(apiId);
-    		}else{
-    			routeBean.setApiId(subString);
-    		}
-    		
-    	}else{
-    		// /test
-    		String subString=requestUrl.substring(1);
-    		routeBean.setTargetUrl(subString);
-    		int index=subString.indexOf("/");
-    		if(index!=-1){
-    			String apiId=subString.substring(0,index);
-    			routeBean.setApiId(apiId);
-    		}else{
-    			routeBean.setApiId(subString);
-    		}
-    	}
-    }
-   /* private  CacheService cacheService;
+    private void setRouteBeanApiId(OpenApiHttpRequestBean request, OpenApiRouteBean routeBean) {
+        String requestUrl = request.getRequestUrl();
+        if (this.contextPath != null) {
+            String subString = requestUrl.substring(requestUrl.indexOf(contextPath) + contextPath.length() + 1);
+            routeBean.setTargetUrl(subString);
+            int index = subString.indexOf("/");
+            if (index != -1) {
+                String apiId = subString.substring(0, index);
+                routeBean.setApiId(apiId);
+            } else {
+                routeBean.setApiId(subString);
+            }
 
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }*/
-    
-    private void setError(String errorCode, String errMsg, OpenApiHttpRequestBean requestBean) {
-        CommonResponse<String> r = new CommonResponse<String>(false);
-        r.setErrorCode(errorCode);
-        r.setErrorMsg(errMsg);
-        requestBean.setPrintStr(r.toString());
+        } else {
+            // /test
+            String subString = requestUrl.substring(1);
+            routeBean.setTargetUrl(subString);
+            int index = subString.indexOf("/");
+            if (index != -1) {
+                String apiId = subString.substring(0, index);
+                routeBean.setApiId(apiId);
+            } else {
+                routeBean.setApiId(subString);
+            }
+        }
     }
+    /*
+     * private CacheService cacheService;
+     * 
+     * public void setCacheService(CacheService cacheService) {
+     * this.cacheService = cacheService; }
+     */
 
     private void validateParam(OpenApiHttpRequestBean requestBean) {
-       /* String appId = requestBean.getAppId();
-        if (StringUtils.isBlank(appId)) { // appId为空
-            setError(OauthErrorEnum.APP_ID.getErrCode(), OauthErrorEnum.APP_ID.getErrMsg(), requestBean);
-            return;
-        }
-        String appToken = requestBean.getAppToken();
-
-        if (StringUtils.isBlank(appToken)) {// appToken为空
-            setError(OauthErrorEnum.APP_TOKEN.getErrCode(), OauthErrorEnum.APP_TOKEN.getErrMsg(), requestBean);
-            return;
-        }
-        if (StringUtils.isBlank(requestBean.getApiId())) {
-            setError(OauthErrorEnum.API_ID.getErrCode(), OauthErrorEnum.API_ID.getErrMsg(), requestBean);
-            return;
-        }*/
+        /*
+         * String appId = requestBean.getAppId(); if
+         * (StringUtils.isBlank(appId)) { // appId为空
+         * setError(OauthErrorEnum.APP_ID.getErrCode(),
+         * OauthErrorEnum.APP_ID.getErrMsg(), requestBean); return; } String
+         * appToken = requestBean.getAppToken();
+         * 
+         * if (StringUtils.isBlank(appToken)) {// appToken为空
+         * setError(OauthErrorEnum.APP_TOKEN.getErrCode(),
+         * OauthErrorEnum.APP_TOKEN.getErrMsg(), requestBean); return; } if
+         * (StringUtils.isBlank(requestBean.getApiId())) {
+         * setError(OauthErrorEnum.API_ID.getErrCode(),
+         * OauthErrorEnum.API_ID.getErrMsg(), requestBean); return; }
+         */
 
     }
 
@@ -135,14 +126,14 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
         // 权限校验
         authRequestBean(request);
 
-        initRouteBean(httpSessionBean.getRequest(),openApiContext); // 初始化路由bean
+        initRouteBean(httpSessionBean.getRequest(), openApiContext); // 初始化路由bean
         if (logger.isDebugEnabled()) {
-            logger.info(String.format(
-                    "end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
-                    System.currentTimeMillis(), (System.currentTimeMillis() - currentTime), httpSessionBean));
+            logger.info(
+                    String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
+                            System.currentTimeMillis(), (System.currentTimeMillis() - currentTime), httpSessionBean));
         }
 
-        if (StringUtils.isNotBlank(request.getPrintStr())) {
+        if (request.getReturnContent() != null) {
             return true;
         }
         return false;
@@ -154,12 +145,11 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
     public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
-    
-    
+
     private String contextPath;
 
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
-    
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
 }

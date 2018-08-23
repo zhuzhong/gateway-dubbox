@@ -13,16 +13,16 @@ import java.util.Map;
 public interface OpenApiHttpClientService {
 
     // get请求
-    public String doGet(String webUrl,Map<String,String> requestHeader);
-    public String doGet(String webUrl, Map<String,String> paramMap,Map<String,String> requestHeader);
-    public String doHttpsGet(String webUrl,Map<String,String> requestHeader);
+    public byte[] doGet(String webUrl,Map<String,String> requestHeader);
+    public byte[] doGet(String webUrl, Map<String,String> paramMap,Map<String,String> requestHeader);
+    public byte[] doHttpsGet(String webUrl,Map<String,String> requestHeader);
     
-    public String doHttpsGet(String webUrl, Map<String,String> paramMap,Map<String,String> requestHeader);
+    public byte[] doHttpsGet(String webUrl, Map<String,String> paramMap,Map<String,String> requestHeader);
     
 
-    public String doHttpsPost(String url, String reqData, Map<String,String> requestHeader);
+    public byte[] doHttpsPost(String url, String reqData, Map<String,String> requestHeader);
 
-    public String doPost(String url, String reqData, Map<String,String> requestHeader);
+    public byte[] doPost(String url, String reqData, Map<String,String> requestHeader);
     
     /*public Map<String, String> HttpGet(String webUrl, Map paramMap);
 
@@ -34,5 +34,5 @@ public interface OpenApiHttpClientService {
     public String HttpPost(String url, String method, Map paramMap);
 */
     
-    public byte[] doGet2(String webUrl, Map<String, String> requestHeader) ;
+   // public byte[] doGet2(String webUrl, Map<String, String> requestHeader) ;
 }

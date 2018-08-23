@@ -5,8 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
-import com.z.gateway.common.exception.OpenApiException;
-import com.z.gateway.common.exception.OpenApiServiceErrorEnum;
 import com.z.gateway.core.AbstractOpenApiHandler;
 import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
@@ -29,11 +27,11 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 				.getOpenApiHttpSessionBean();
 		OpenApiHttpRequestBean request = httpSessionBean.getRequest();
 		long currentTime = System.currentTimeMillis();
-		if (logger.isDebugEnabled()) {
-			logger.info(String.format(
+		
+			logger.debug(String.format(
 					"begin run doExecuteBiz,currentTime=%d,httpSessonBean=%s",
 					currentTime, httpSessionBean));
-		}
+		
 	/*	String printStr = this.executePrint(request,blCtx);
 		request.setPrintStr(printStr);
 	*/	
@@ -45,13 +43,13 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 		request.setReqHeader(routeBean.getReqHeader()); //把头给还回去了，为了支持获取图形验证码之类的需求
 		request.setReturnContent(routeBean.getReturnContent());
 		
-		if (logger.isDebugEnabled()) {
-			logger.info(String
+		
+			logger.debug(String
 					.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
 							System.currentTimeMillis(),
 							(System.currentTimeMillis() - currentTime),
 							httpSessionBean));
-		}
+		
 
 		return false;
 	}
@@ -64,7 +62,7 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
     }*/
     
     
-	private String executePrint(OpenApiHttpRequestBean request,OpenApiContext blCtx) {
+/*	private String executePrint(OpenApiHttpRequestBean request,OpenApiContext blCtx) {
 		logger.info("step3...");
 		try {
 			return this.getResponseBody(request,blCtx);
@@ -81,24 +79,24 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 			return "error";
 		} finally {
 			// 从redis移除当前routebean
-			/*String routeBeanKey = request.getRouteBeanKey();
+			String routeBeanKey = request.getRouteBeanKey();
 			if (StringUtils.isNotBlank(routeBeanKey)) {
 				cacheService.remove(routeBeanKey);
-			}*/
+			}
 
-			/*
+			
 			 * // 设置同步信号unlock redisKey =
 			 * request.getUserTokenSyncSingalRedisKey(); if
 			 * (StringUtils.isNotBlank(redisKey)) { Cache redisCache =
 			 * this.cacheManager.getCache(openApiCacheName);
 			 * redisCache.put(request.getUserTokenSyncSingalRedisKey(),
 			 * CommonCodeConstants.SyncSingalType.SingalUnLock.getCode()); }
-			 */
+			 
 		}
 
-	}
+	}*/
 
-	private String getResponseBody(OpenApiHttpRequestBean bean,OpenApiContext blCtx) {
+/*	private String getResponseBody(OpenApiHttpRequestBean bean,OpenApiContext blCtx) {
 		logger.info("step4....");
 		String routeBeanKey = bean.getRouteBeanKey();
 		OpenApiRouteBean routeBean = (OpenApiRouteBean) blCtx
@@ -110,5 +108,5 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 			throw new RuntimeException("返回内容格式不对...");
 		}
 
-	}
+	}*/
 }

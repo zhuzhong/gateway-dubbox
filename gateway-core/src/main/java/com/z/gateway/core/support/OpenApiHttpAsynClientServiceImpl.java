@@ -77,7 +77,8 @@ import com.z.gateway.core.OpenApiHttpClientService;
  * 
  */
 @Deprecated
-public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientService {
+public class OpenApiHttpAsynClientServiceImpl //implements OpenApiHttpClientService
+{
 
 /*    public static void main(String args[]) {
         OpenApiHttpAsynClientServiceImpl p = new OpenApiHttpAsynClientServiceImpl();
@@ -344,7 +345,7 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
 
     }
 
-    @Override
+ 
     public String doGet(String webUrl, Map<String,String> requestHeader) {
 
         final HttpGet httpget = new HttpGet(webUrl);
@@ -392,31 +393,31 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
 
     }
 
-    @Override
+    
     public String doGet(String webUrl, Map<String, String> paramMap, Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
+   
     public String doHttpsGet(String webUrl, Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return doGet(webUrl, requestHeader);
     }
 
-    @Override
+  
     public String doHttpsGet(String webUrl, Map<String, String> paramMap,Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
+
     public String doHttpsPost(String url, String content, Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
+ 
     public String doPost(String url, String reqData,Map<String,String> requestHeader) {
         // TODO Auto-generated method stub
         return null;

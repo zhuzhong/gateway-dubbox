@@ -38,15 +38,15 @@ public class OpenApiRouteBean implements Serializable{
     private Map<String, String> serviceGetReqData; // get请求参数
     private Properties thdApiUrlParams;// 第三方接口所需传入的url参数
 
-    private String serviceRsp; // 后端服务返回值
+   // private String serviceRsp; // 后端服务返回值
 
-    public String getServiceRsp() {
+   /* public String getServiceRsp() {
         return serviceRsp;
     }
 
     public void setServiceRsp(String serviceRsp) {
         this.serviceRsp = serviceRsp;
-    }
+    }*/
 
     public void setThdApiUrlParams(Properties thdApiUrlParams) {
         this.thdApiUrlParams = thdApiUrlParams;
@@ -152,7 +152,7 @@ public class OpenApiRouteBean implements Serializable{
 	}
 
 	
-	private byte[] returnContent;
+	private byte[] returnContent;// 后端服务返回值
 
     public byte[] getReturnContent() {
         return returnContent;

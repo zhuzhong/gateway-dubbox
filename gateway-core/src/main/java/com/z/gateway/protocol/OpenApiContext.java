@@ -102,5 +102,7 @@ public class OpenApiContext extends HashMap implements Context {
     public void setOpenApiHttpSessionBean(OpenApiHttpSessionBean sessionBean) {
         this.put(this.SESSION_BEAN_CONTEXT_KEY, sessionBean);
     }
+    
+    public OpenApiContext(){}
 
 }

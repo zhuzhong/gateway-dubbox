@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
 import com.z.gateway.common.util.CommonCodeConstants;
 
 /**
@@ -47,7 +46,7 @@ public class OpenApiHttpRequestBean implements Serializable {
 
     private String traceId; //
 
-    private String printStr; //
+   // private String printStr; //
     // private String serviceRsp; // ֵ
     // begin ---
     private String appId;
@@ -118,13 +117,13 @@ public class OpenApiHttpRequestBean implements Serializable {
         this.requestMethod = requestMethod;
     }
 
-    public String getPrintStr() {
+  /*  public String getPrintStr() {
         return printStr;
     }
 
     public void setPrintStr(String printStr) {
         this.printStr = printStr;
-    }
+    }*/
 
     public String getServiceReqData() {
         return serviceReqData;
@@ -316,14 +315,14 @@ public class OpenApiHttpRequestBean implements Serializable {
                 + ", thdApiUrlParams=" + thdApiUrlParams + ", serviceReqData=" + serviceReqData + ", requestMethod="
                 + requestMethod + ", serviceGetReqData=" + serviceGetReqData + ", queryString=" + queryString
                 + ", requestTime=" + requestTime + ", responseTime=" + responseTime + ", elapsedTime=" + elapsedTime
-                + ", traceId=" + traceId + ", printStr=" + printStr + ", appId=" + appId + ", appToken=" + appToken
+                + ", traceId=" + traceId  + ", appId=" + appId + ", appToken=" + appToken
                 + ", apiId=" + apiId + ", version=" + version + ", timeStamp=" + timeStamp + ", signMethod="
                 + signMethod + ", sign=" + sign + ", deviceToken=" + deviceToken + ", userToken=" + userToken
                 + ", format=" + format + ", returnContent=" + Arrays.toString(returnContent) + "]";
     }
 
 
-    private byte[] returnContent;
+    private byte[] returnContent; //返回内容
 
     public byte[] getReturnContent() {
         return returnContent;

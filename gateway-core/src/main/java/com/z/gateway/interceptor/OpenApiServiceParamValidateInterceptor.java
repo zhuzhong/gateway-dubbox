@@ -40,7 +40,7 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
             try {
                 parsePostMethod(request, bean);
             } catch (IOException e) {
-                log.error("这个请求格式不是application/json的,我处理不了...");
+                //log.error("这个请求格式不是application/json的,我处理不了...");
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }

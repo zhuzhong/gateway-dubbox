@@ -20,10 +20,10 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
 
     private final int maxReqDataLth = 500;
 
-
     private ApiInterfaceService apiInterfaceService;
 
     private OpenApiHttpClientService apiHttpClientService;
+
     public void setApiInterfaceService(ApiInterfaceService apiInterfaceService) {
         this.apiInterfaceService = apiInterfaceService;
     }
@@ -31,12 +31,13 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
     public void setApiHttpClientService(OpenApiHttpClientService apiHttpClientService) {
         this.apiHttpClientService = apiHttpClientService;
     }
-  /*  private  CacheService cacheService;
+    /*
+     * private CacheService cacheService;
+     * 
+     * public void setCacheService(CacheService cacheService) {
+     * this.cacheService = cacheService; }
+     */
 
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }*/
-    
     // step2
     @Override
     public boolean doExcuteBiz(Context context) {
@@ -51,72 +52,73 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
         String routeBeanKey = request.getRouteBeanKey();
         OpenApiRouteBean routeBean = (OpenApiRouteBean) openApiContext.get(routeBeanKey);
 
-        //routeBean.setServiceRsp(doInvokeBackService(routeBean)); // 返回值
-        routeBean.setReturnContent(doInvokeBackService2(routeBean));
+        // routeBean.setServiceRsp(doInvokeBackService(routeBean)); // 返回值
+        routeBean.setReturnContent(doInvokeBackService(routeBean));
         if (logger.isDebugEnabled()) {
-            logger.info(String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
-                    System.currentTimeMillis(), (System.currentTimeMillis() - currentTime) , httpSessionBean));
+            logger.info(
+                    String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
+                            System.currentTimeMillis(), (System.currentTimeMillis() - currentTime), httpSessionBean));
         }
         return false;
     }
 
-    
     /**
      * 根据routeBean信息，通过httpclient调用后端信息，然后将返回值构建成string
      * 
      * @param bean
      * @return
      */
-    private byte[] doInvokeBackService2(OpenApiRouteBean bean) {
+    /*
+     * private byte[] doInvokeBackService2(OpenApiRouteBean bean) {
+     * logger.info("step5..."); byte[] serviceRspData = null; // 后端服务返回值 String
+     * operationType = bean.getOperationType(); String requestMethod =
+     * bean.getRequestMethod();
+     * 
+     * if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
+     * 
+     * } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
+     * 
+     * } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
+     * logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(),
+     * bean.getVersion())); ApiInterface apiInfo =
+     * apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(),
+     * bean.getVersion());
+     * 
+     * if (apiInfo == null) { return String.format(
+     * "this apiId=%s,version=%s has off line,please use another one",
+     * bean.getApiId(), bean.getVersion()).getBytes(); }
+     * apiInfo.setTargetUrl(bean.getTargetUrl());
+     * apiInfo.setRequestMethod(bean.getRequestMethod()); if
+     * (CommonCodeConstants.REQUEST_METHOD.GET.name().equalsIgnoreCase(
+     * requestMethod)) { // get请求 String url = apiInfo.getUrl(); url =
+     * UrlUtil.dealUrl(url, bean.getThdApiUrlParams()); serviceRspData =
+     * apiHttpClientService.doGet2(url,bean.getReqHeader());
+     * 
+     * } } return serviceRspData; }
+     */
+    /**
+     * 根据routeBean信息，通过httpclient调用后端信息，然后将返回值构建成string
+     * 
+     * @param bean
+     * @return
+     */
+    private byte[] doInvokeBackService(OpenApiRouteBean bean) {
         logger.info("step5...");
         byte[] serviceRspData = null; // 后端服务返回值
         String operationType = bean.getOperationType();
         String requestMethod = bean.getRequestMethod();
 
         if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
-            
+
         } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
-            
+
         } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
             logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
             ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
-            
-            if (apiInfo == null) {
-                return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(), bean.getVersion()).getBytes();
-            }
-            apiInfo.setTargetUrl(bean.getTargetUrl());
-            apiInfo.setRequestMethod(bean.getRequestMethod());
-            if (CommonCodeConstants.REQUEST_METHOD.GET.name().equalsIgnoreCase(requestMethod)) { // get请求
-                String url = apiInfo.getUrl();
-                url = UrlUtil.dealUrl(url, bean.getThdApiUrlParams());
-                serviceRspData = apiHttpClientService.doGet2(url,bean.getReqHeader());
 
-            } 
-        } 
-        return serviceRspData;
-    }
-    /**
-     * 根据routeBean信息，通过httpclient调用后端信息，然后将返回值构建成string
-     * 
-     * @param bean
-     * @return
-     */
-    private String doInvokeBackService(OpenApiRouteBean bean) {
-        logger.info("step5...");
-        String serviceRspData = null; // 后端服务返回值
-        String operationType = bean.getOperationType();
-        String requestMethod = bean.getRequestMethod();
-
-        if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
-            
-        } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
-            
-        } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
-            logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
-            ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
-            
             if (apiInfo == null) {
-                return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(), bean.getVersion());
+                return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(),
+                        bean.getVersion()).getBytes();
             }
             apiInfo.setTargetUrl(bean.getTargetUrl());
             apiInfo.setRequestMethod(bean.getRequestMethod());
@@ -132,15 +134,17 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
                     if (bean.getServiceGetReqData() == null) {
-                        serviceRspData = apiHttpClientService.doHttpsGet(url,bean.getReqHeader());
+                        serviceRspData = apiHttpClientService.doHttpsGet(url, bean.getReqHeader());
                     } else {
-                        serviceRspData = apiHttpClientService.doHttpsGet(url, bean.getServiceGetReqData(),bean.getReqHeader());
+                        serviceRspData = apiHttpClientService.doHttpsGet(url, bean.getServiceGetReqData(),
+                                bean.getReqHeader());
                     }
                 } else {
                     if (bean.getServiceGetReqData() == null) {
-                        serviceRspData = apiHttpClientService.doGet(url,bean.getReqHeader());
+                        serviceRspData = apiHttpClientService.doGet(url, bean.getReqHeader());
                     } else {
-                        serviceRspData = apiHttpClientService.doGet(url, bean.getServiceGetReqData(),bean.getReqHeader());
+                        serviceRspData = apiHttpClientService.doGet(url, bean.getServiceGetReqData(),
+                                bean.getReqHeader());
                     }
                 }
 
@@ -153,19 +157,19 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 }
                 logger.info(String.format("{serviceId:%s ,reqData:%s }", bean.getApiId(), reqData));
 
-                //String contentType = bean.getReqHeader().get(CONTENT_TYPE_KEY);
+                // String contentType =
+                // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
-                    serviceRspData = apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(),bean.getReqHeader());
+                    serviceRspData = apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(),
+                            bean.getReqHeader());
                 } else {
-                    serviceRspData = apiHttpClientService.doPost(url, bean.getServiceReqData() ,bean.getReqHeader());
+                    serviceRspData = apiHttpClientService.doPost(url, bean.getServiceReqData(), bean.getReqHeader());
                 }
                 if ("timeout".equals(serviceRspData)) {
                     logger.error("invoke service: response is null!");
                     throw new OpenApiException(OauthErrorEnum.ERROR.getErrCode(), OauthErrorEnum.ERROR.getErrMsg());
                 }
             }
-        } else {
-            
         }
         return serviceRspData;
     }

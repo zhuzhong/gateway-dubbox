@@ -49,9 +49,7 @@ public class OpenApiResponseUtils {
                 os.flush();
                 os.close();
             }
-        }
-
-        catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
         /*

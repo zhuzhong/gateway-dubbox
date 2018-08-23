@@ -4,9 +4,6 @@
 package com.z.gateway.core.support;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,163 +50,175 @@ import com.z.gateway.core.OpenApiHttpClientService;
  */
 public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
 
-	private static Logger logger = LoggerFactory.getLogger(OpenApiHttpClientServiceImpl.class);
-	private static PoolingHttpClientConnectionManager manager = null;
-	private static CloseableHttpClient httpClient = null;
+    private static Logger logger = LoggerFactory.getLogger(OpenApiHttpClientServiceImpl.class);
+    private static PoolingHttpClientConnectionManager manager = null;
+    private static CloseableHttpClient httpClient = null;
 
-	private boolean usingHead;
+    private boolean usingHead;
 
-	public void setUsingHead(Boolean usingHead) {
-		this.usingHead = usingHead;
-	}
+    public void setUsingHead(Boolean usingHead) {
+        this.usingHead = usingHead;
+    }
 
-	public void init() {
-		initHttpClient();
-	}
+    public void init() {
+        initHttpClient();
+    }
 
-	private void initHttpClient() {
-		// 注册访问协议相关的socket工厂
-		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
-				.register("http", PlainConnectionSocketFactory.INSTANCE)
-				.register("https", SSLConnectionSocketFactory.getSystemSocketFactory()).build();
-		// httpclient 工厂
-		HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory = new ManagedHttpClientConnectionFactory(
-				DefaultHttpRequestWriterFactory.INSTANCE, DefaultHttpResponseParserFactory.INSTANCE);
-		// dns解析器
-		DnsResolver dnsResolver = SystemDefaultDnsResolver.INSTANCE;
-		// 创建池化连接管理器
-		manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, connFactory, dnsResolver);
-		// 默认socket配置
-		SocketConfig defaultSocketConfig = SocketConfig.custom().setTcpNoDelay(true).build();
-		manager.setDefaultSocketConfig(defaultSocketConfig);
+    private void initHttpClient() {
+        // 注册访问协议相关的socket工厂
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
+                .register("http", PlainConnectionSocketFactory.INSTANCE)
+                .register("https", SSLConnectionSocketFactory.getSystemSocketFactory()).build();
+        // httpclient 工厂
+        HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory = new ManagedHttpClientConnectionFactory(
+                DefaultHttpRequestWriterFactory.INSTANCE, DefaultHttpResponseParserFactory.INSTANCE);
+        // dns解析器
+        DnsResolver dnsResolver = SystemDefaultDnsResolver.INSTANCE;
+        // 创建池化连接管理器
+        manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, connFactory, dnsResolver);
+        // 默认socket配置
+        SocketConfig defaultSocketConfig = SocketConfig.custom().setTcpNoDelay(true).build();
+        manager.setDefaultSocketConfig(defaultSocketConfig);
 
-		manager.setMaxTotal(this.maxTotal);// 设置整个连接池的最大连接数
-		manager.setDefaultMaxPerRoute(this.defaultMaxPerRoute);// 每个路由最大连接数
-		manager.setValidateAfterInactivity(this.validateAfterInactivity);
+        manager.setMaxTotal(this.maxTotal);// 设置整个连接池的最大连接数
+        manager.setDefaultMaxPerRoute(this.defaultMaxPerRoute);// 每个路由最大连接数
+        manager.setValidateAfterInactivity(this.validateAfterInactivity);
 
-		RequestConfig defaultRequestConfig = RequestConfig.custom().setConnectTimeout(this.connectionTimeout)
-				// 2s
-				.setSocketTimeout(this.socketTimeout)
-				// 5s
-				.setConnectionRequestTimeout(this.connectionRequestTimeout).build();
-		httpClient = HttpClients.custom().setConnectionManager(manager).setConnectionManagerShared(false)
-				.evictIdleConnections(60, TimeUnit.SECONDS).evictExpiredConnections()
-				.setConnectionTimeToLive(60, TimeUnit.SECONDS).setDefaultRequestConfig(defaultRequestConfig)
-				.setConnectionReuseStrategy(DefaultConnectionReuseStrategy.INSTANCE)
-				.setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE)
-				.setRetryHandler(new DefaultHttpRequestRetryHandler(0, false)).build();
+        RequestConfig defaultRequestConfig = RequestConfig.custom().setConnectTimeout(this.connectionTimeout)
+                // 2s
+                .setSocketTimeout(this.socketTimeout)
+                // 5s
+                .setConnectionRequestTimeout(this.connectionRequestTimeout).build();
+        httpClient = HttpClients.custom().setConnectionManager(manager).setConnectionManagerShared(false)
+                .evictIdleConnections(60, TimeUnit.SECONDS).evictExpiredConnections()
+                .setConnectionTimeToLive(60, TimeUnit.SECONDS).setDefaultRequestConfig(defaultRequestConfig)
+                .setConnectionReuseStrategy(DefaultConnectionReuseStrategy.INSTANCE)
+                .setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE)
+                .setRetryHandler(new DefaultHttpRequestRetryHandler(0, false)).build();
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					httpClient.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    httpClient.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-		});
-	}
+        });
+    }
 
-	private CloseableHttpClient getHttpClient() {
-		return httpClient;
+    private CloseableHttpClient getHttpClient() {
+        return httpClient;
 
-	}
+    }
 
-	private int maxTotal = 300;
-	private int defaultMaxPerRoute = 200;
-	private int validateAfterInactivity = 5000;
-	private int connectionTimeout = 2000;// 2s
-	private int socketTimeout = 5000;// 5s
-	private int connectionRequestTimeout = 2000;
+    private int maxTotal = 300;
+    private int defaultMaxPerRoute = 200;
+    private int validateAfterInactivity = 5000;
+    private int connectionTimeout = 2000;// 2s
+    private int socketTimeout = 5000;// 5s
+    private int connectionRequestTimeout = 2000;
 
-	public void setConnectionTimeout(int connectionTimeout) {
-		this.connectionTimeout = connectionTimeout;
-	}
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
 
-	public void setSocketTimeout(int socketTimeout) {
-		this.socketTimeout = socketTimeout;
-	}
+    public void setSocketTimeout(int socketTimeout) {
+        this.socketTimeout = socketTimeout;
+    }
 
-	public void setConnectionRequestTimeout(int connectionRequestTimeout) {
-		this.connectionRequestTimeout = connectionRequestTimeout;
-	}
+    public void setConnectionRequestTimeout(int connectionRequestTimeout) {
+        this.connectionRequestTimeout = connectionRequestTimeout;
+    }
 
-	public void setMaxTotal(int maxTotal) {
-		this.maxTotal = maxTotal;
-	}
+    public void setMaxTotal(int maxTotal) {
+        this.maxTotal = maxTotal;
+    }
 
-	public void setDefaultMaxPerRoute(int defaultMaxPerRoute) {
-		this.defaultMaxPerRoute = defaultMaxPerRoute;
-	}
+    public void setDefaultMaxPerRoute(int defaultMaxPerRoute) {
+        this.defaultMaxPerRoute = defaultMaxPerRoute;
+    }
 
-	public void setValidateAfterInactivity(int validateAfterInactivity) {
-		this.validateAfterInactivity = validateAfterInactivity;
-	}
+    public void setValidateAfterInactivity(int validateAfterInactivity) {
+        this.validateAfterInactivity = validateAfterInactivity;
+    }
 
-	@Override
-	public String doHttpsPost(String url, String reqData, Map<String, String> requestHeader) {
-		return doPost(url, reqData, requestHeader);
-	}
+    @Override
+    public byte[] doHttpsPost(String url, String reqData, Map<String, String> requestHeader) {
+        return doPost(url, reqData, requestHeader);
+    }
 
-	@Override
-	public String doPost(String url, String reqData, Map<String, String> requestHeader) {
-		String body = "";
-		org.apache.http.client.methods.HttpPost httpPost = new org.apache.http.client.methods.HttpPost(url);
-		// 将所有的header都传过去
-		if (requestHeader != null && usingHead) {
-			
-			for(Map.Entry<String, String> kv:requestHeader.entrySet()){
-				if(kv.getKey().equalsIgnoreCase("Content-Length")){
-					continue;
-				}
-				httpPost.addHeader(kv.getKey(), kv.getValue());
-			}
+    @Override
+    public byte[] doPost(String url, String reqData, Map<String, String> requestHeader) {
+        byte[] body = null;
+        org.apache.http.client.methods.HttpPost httpPost = new org.apache.http.client.methods.HttpPost(url);
+        // 将所有的header都传过去
+        if (requestHeader != null && usingHead) {
 
-		}
+            for (Map.Entry<String, String> kv : requestHeader.entrySet()) {
+                if (kv.getKey().equalsIgnoreCase("Content-Length")) {
+                    continue;
+                }
+                httpPost.addHeader(kv.getKey(), kv.getValue());
+            }
 
-		httpPost.setEntity(new StringEntity(reqData, "utf-8"));
-		try {
-			// 执行请求操作，并拿到结果（同步阻塞）
-			CloseableHttpResponse response = getHttpClient().execute(httpPost);
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK) {
-				// 获取结果实体
-				HttpEntity entity = response.getEntity();
-				if (entity != null) {
-					// 按指定编码转换结果实体为String类型
-					body = EntityUtils.toString(entity, "utf-8");
-				}
-				EntityUtils.consume(entity);
-				 
-				 if(requestHeader!=null){
-				     requestHeader.clear();
-				     Header[]  hs=response.getAllHeaders();
-				     for(Header h:hs){
-	                     requestHeader.put(h.getName(), h.getValue()); //把头设回去
-	                 }
-				 }
-				 
-			}
+        }
 
-			// 释放链接
-			response.close();
-		} catch (IOException e) {
-			logger.error("url={}调用失败", e);
-			e.printStackTrace();
-		}
-		return body;
-	}
-	public byte[] doGet2(String webUrl, Map<String, String> requestHeader) {
-	    logger.info(String.format("run doGet method,weburl=%s", webUrl));
-        byte[] body =null;
+        httpPost.setEntity(new StringEntity(reqData, "utf-8"));
+        try {
+            // 执行请求操作，并拿到结果（同步阻塞）
+            CloseableHttpResponse response = getHttpClient().execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                // 获取结果实体
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    if (requestHeader != null) {
+                        requestHeader.clear();
+                        Header[] hs = response.getAllHeaders();
+                        for (Header h : hs) {
+                            requestHeader.put(h.getName(), h.getValue()); // 把头设回去
+                        }
+                    }
+                    // 按指定编码转换结果实体为String类型
+                    body = resbyte(entity);
+                }
+                EntityUtils.consume(entity);
+
+            }
+
+            // 释放链接
+            response.close();
+        } catch (IOException e) {
+            logger.error("url={}调用失败", e);
+            e.printStackTrace();
+        }
+        return body;
+    }
+
+    private byte[] resbyte(HttpEntity entity) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            entity.writeTo(baos);
+            byte[] bs = baos.toByteArray();
+            return bs;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public byte[] doGet(String webUrl, Map<String, String> requestHeader) {
+        logger.info(String.format("run doGet method,weburl=%s", webUrl));
+        byte[] body = null;
         org.apache.http.client.methods.HttpGet httpGet = new org.apache.http.client.methods.HttpGet(webUrl);
         // 将所有的header都传过去
         if (requestHeader != null && usingHead) {
 
-            for(Map.Entry<String, String> kv:requestHeader.entrySet()){
-                if(kv.getKey().equalsIgnoreCase("Content-Length")){
+            for (Map.Entry<String, String> kv : requestHeader.entrySet()) {
+                if (kv.getKey().equalsIgnoreCase("Content-Length")) {
                     continue;
                 }
                 httpGet.addHeader(kv.getKey(), kv.getValue());
@@ -220,27 +229,23 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
             HttpEntity entity = response.getEntity();
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_OK) {
-                
-                
+
                 if (entity != null) {
-                    if(requestHeader!=null){
-                       // requestHeader.clear();
-                        Header[]  hs=response.getAllHeaders();
-                        for(Header h:hs){
-                            requestHeader.put(h.getName(), h.getValue()); //把头设回去
+                    if (requestHeader != null) {
+                        // requestHeader.clear();
+                        Header[] hs = response.getAllHeaders();
+                        for (Header h : hs) {
+                            requestHeader.put(h.getName(), h.getValue()); // 把头设回去
                         }
                     }
-                    //body = EntityUtils.toString(entity, "utf-8");
-                    body=resbyte(entity);
-
-                    System.out.println("init return body hashCode="+body.hashCode());
+                    // body = EntityUtils.toString(entity, "utf-8");
+                    body = resbyte(entity);
+                    System.out.println("init return body hashCode=" + body.hashCode());
                 }
-                
-              
-                 
-                 EntityUtils.consume(entity);
+
+                EntityUtils.consume(entity);
             }
-            //response.close();
+            // response.close();
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -248,129 +253,53 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         }
 
         return body;
-	}
-	
-	   private byte[] resbyte(HttpEntity entity){
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        try {
-	            entity.writeTo(baos);
-	           byte[] bs= baos.toByteArray();
-	           return bs;
-	        } catch (IOException e) {
-	            throw new IllegalStateException(e);
-	        }
-	    }
-	@Override
-	public String doGet(String webUrl, Map<String, String> requestHeader) {
-		logger.info(String.format("run doGet method,weburl=%s", webUrl));
-		String body = "";
-		org.apache.http.client.methods.HttpGet httpGet = new org.apache.http.client.methods.HttpGet(webUrl);
-		// 将所有的header都传过去
-		if (requestHeader != null && usingHead) {
+    }
 
-			for(Map.Entry<String, String> kv:requestHeader.entrySet()){
-				if(kv.getKey().equalsIgnoreCase("Content-Length")){
-					continue;
-				}
-				httpGet.addHeader(kv.getKey(), kv.getValue());
-			}
-		}
-		try {
-			CloseableHttpResponse response = getHttpClient().execute(httpGet);
-			HttpEntity entity = response.getEntity();
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK) {
-			    
-			    
-				if (entity != null) {
-				    if(requestHeader!=null){
-	                   // requestHeader.clear();
-	                    Header[]  hs=response.getAllHeaders();
-	                    for(Header h:hs){
-	                        requestHeader.put(h.getName(), h.getValue()); //把头设回去
-	                    }
-	                }
-					//body = EntityUtils.toString(entity, "utf-8");
-				    body=responseAsString(entity);
-				    System.out.println("init return body hashCode="+body.hashCode());
-				}
-				
-			  
-			     
-			     EntityUtils.consume(entity);
-			}
-			//response.close();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    @Override
+    public byte[] doGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
+        logger.info(String.format("run doGet method,weburl=%s", webUrl));
+        String url = webUrl;
+        // 设置编码格式
+        String queryString = createLinkString(paramMap);
+        url = url + "?" + queryString;
+        return doGet(url, requestHeader);
+    }
 
-		return body;
-	}
+    /**
+     * 把数组所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
+     * 
+     * @param params
+     *            需要排序并参与字符拼接的参数组
+     * @return 拼接后字符串
+     */
+    private String createLinkString(Map<String, String> params) {
+        List<String> keys = new ArrayList<String>(params.keySet());
+        Collections.sort(keys);
+        String prestr = "";
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            String value = params.get(key);
 
+            if (i == keys.size() - 1) {// 拼接时，不包括最后一个&字符
+                prestr = prestr + key + "=" + value;
+            } else {
+                prestr = prestr + key + "=" + value + "&";
+            }
+        }
 
-	  private String responseAsString(HttpEntity entity) {
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        try {
-	            entity.writeTo(baos);
-	           byte[] bs= baos.toByteArray();
-	           System.out.println("init byte bs hashCode "+bs.hashCode()+" bs size="+bs.length);
+        return prestr;
+    }
 
+    @Override
+    public byte[] doHttpsGet(String webUrl, Map<String, String> requestHeader) { // https
+                                                                                 // 协议
+        return doGet(webUrl, requestHeader);
+    }
 
-	            String s= new String(bs, "UTF-8");
-	            
-	            return s;
-	        } catch (IOException e) {
-	            throw new IllegalStateException(e);
-	        }
-	    }
-	  
-	@Override
-	public String doGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
-		logger.info(String.format("run doGet method,weburl=%s", webUrl));
-		String url = webUrl;
-		// 设置编码格式
-		String queryString = createLinkString(paramMap);
-		url = url + "?" + queryString;
-		return doGet(url, requestHeader);
-	}
+    @Override
+    public byte[] doHttpsGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
 
-	/**
-	 * 把数组所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
-	 * 
-	 * @param params
-	 *            需要排序并参与字符拼接的参数组
-	 * @return 拼接后字符串
-	 */
-	private String createLinkString(Map<String, String> params) {
-		List<String> keys = new ArrayList<String>(params.keySet());
-		Collections.sort(keys);
-		String prestr = "";
-		for (int i = 0; i < keys.size(); i++) {
-			String key = keys.get(i);
-			String value = params.get(key);
-
-			if (i == keys.size() - 1) {// 拼接时，不包括最后一个&字符
-				prestr = prestr + key + "=" + value;
-			} else {
-				prestr = prestr + key + "=" + value + "&";
-			}
-		}
-
-		return prestr;
-	}
-
-	@Override
-	public String doHttpsGet(String webUrl, Map<String, String> requestHeader) { // https
-																					// 协议
-		return doGet(webUrl, requestHeader);
-	}
-
-	@Override
-	public String doHttpsGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
-
-		return doGet(webUrl, paramMap, requestHeader);
-	}
+        return doGet(webUrl, paramMap, requestHeader);
+    }
 
 }
