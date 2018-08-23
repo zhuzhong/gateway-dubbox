@@ -151,4 +151,15 @@ public class OpenApiRouteBean implements Serializable{
 		this.targetUrl = targetUrl;
 	}
 
+	
+	private byte[] returnContent;
+
+    public byte[] getReturnContent() {
+        return returnContent;
+    }
+
+    public void setReturnContent(byte[] returnContent) {
+        this.returnContent = returnContent;
+    }
+	
 }

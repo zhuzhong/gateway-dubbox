@@ -4,6 +4,7 @@
 package com.z.gateway.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -307,9 +308,28 @@ public class OpenApiHttpRequestBean implements Serializable {
 		this.requestUrl = requestUrl;
 	}
 
-	@Override
+	
+    @Override
     public String toString() {
-        return JSON.toJSONString(this);
+        return "OpenApiHttpRequestBean [reqHeader=" + reqHeader + ", requestUrl=" + requestUrl + ", operationType="
+                + operationType + ", clientAddr=" + clientAddr + ", localAddr=" + localAddr + ", localPort=" + localPort
+                + ", thdApiUrlParams=" + thdApiUrlParams + ", serviceReqData=" + serviceReqData + ", requestMethod="
+                + requestMethod + ", serviceGetReqData=" + serviceGetReqData + ", queryString=" + queryString
+                + ", requestTime=" + requestTime + ", responseTime=" + responseTime + ", elapsedTime=" + elapsedTime
+                + ", traceId=" + traceId + ", printStr=" + printStr + ", appId=" + appId + ", appToken=" + appToken
+                + ", apiId=" + apiId + ", version=" + version + ", timeStamp=" + timeStamp + ", signMethod="
+                + signMethod + ", sign=" + sign + ", deviceToken=" + deviceToken + ", userToken=" + userToken
+                + ", format=" + format + ", returnContent=" + Arrays.toString(returnContent) + "]";
     }
 
+
+    private byte[] returnContent;
+
+    public byte[] getReturnContent() {
+        return returnContent;
+    }
+
+    public void setReturnContent(byte[] returnContent) {
+        this.returnContent = returnContent;
+    }
 }

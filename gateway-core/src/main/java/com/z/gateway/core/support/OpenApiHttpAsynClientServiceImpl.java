@@ -421,4 +421,9 @@ public class OpenApiHttpAsynClientServiceImpl implements OpenApiHttpClientServic
         // TODO Auto-generated method stub
         return null;
     }
+   
+    public byte[] doGet2(String webUrl, Map<String, String> requestHeader) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

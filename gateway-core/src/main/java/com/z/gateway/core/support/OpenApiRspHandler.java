@@ -34,11 +34,16 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 					"begin run doExecuteBiz,currentTime=%d,httpSessonBean=%s",
 					currentTime, httpSessionBean));
 		}
-		String printStr = this.executePrint(request,blCtx);
+	/*	String printStr = this.executePrint(request,blCtx);
 		request.setPrintStr(printStr);
+	*/	
+		
+	
+		
 		OpenApiRouteBean routeBean = (OpenApiRouteBean) blCtx
                 .get(request.getRouteBeanKey());
 		request.setReqHeader(routeBean.getReqHeader()); //把头给还回去了，为了支持获取图形验证码之类的需求
+		request.setReturnContent(routeBean.getReturnContent());
 		
 		if (logger.isDebugEnabled()) {
 			logger.info(String

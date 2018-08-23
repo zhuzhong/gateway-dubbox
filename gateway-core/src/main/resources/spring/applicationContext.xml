@@ -100,18 +100,8 @@
 		/> -->
 
 	<bean id="apiInterfaceServiceImpl"
-		class="com.z.gateway.service.support.ZkApiInterfaceServiceImpl"
-		init-method="init">
-		<property name="rootPath" value="${zk.rootpath}"></property>
-		<property name="zkServers" value="${zk.zkservers}"></property>
+		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl">
+	
 	</bean>
 
-	<!-- 虚拟服务注入注册中心 -->
-	<bean class="com.z.gateway.service.support.DefaultVirtualServiceImpl" init-method="init">
-		<property name="rootPath" value="${virtual.zk.rootpath}"></property>
-		<property name="zkServers" value="${virtual.zk.zkservers}"></property>
-		<property name="context" value="${proj.contextPath}"></property>
-		<property name="ip" value="${virtual.ip}"></property>
-		<property name="port" value="${virtual.port}"></property>
-	</bean>
 </beans>

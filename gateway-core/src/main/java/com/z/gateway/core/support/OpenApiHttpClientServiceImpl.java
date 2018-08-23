@@ -3,6 +3,10 @@
  */
 package com.z.gateway.core.support;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +57,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
 	private static PoolingHttpClientConnectionManager manager = null;
 	private static CloseableHttpClient httpClient = null;
 
-	private Boolean usingHead;
+	private boolean usingHead;
 
 	public void setUsingHead(Boolean usingHead) {
 		this.usingHead = usingHead;
@@ -197,7 +201,65 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
 		}
 		return body;
 	}
+	public byte[] doGet2(String webUrl, Map<String, String> requestHeader) {
+	    logger.info(String.format("run doGet method,weburl=%s", webUrl));
+        byte[] body =null;
+        org.apache.http.client.methods.HttpGet httpGet = new org.apache.http.client.methods.HttpGet(webUrl);
+        // 将所有的header都传过去
+        if (requestHeader != null && usingHead) {
 
+            for(Map.Entry<String, String> kv:requestHeader.entrySet()){
+                if(kv.getKey().equalsIgnoreCase("Content-Length")){
+                    continue;
+                }
+                httpGet.addHeader(kv.getKey(), kv.getValue());
+            }
+        }
+        try {
+            CloseableHttpResponse response = getHttpClient().execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                
+                
+                if (entity != null) {
+                    if(requestHeader!=null){
+                       // requestHeader.clear();
+                        Header[]  hs=response.getAllHeaders();
+                        for(Header h:hs){
+                            requestHeader.put(h.getName(), h.getValue()); //把头设回去
+                        }
+                    }
+                    //body = EntityUtils.toString(entity, "utf-8");
+                    body=resbyte(entity);
+
+                    System.out.println("init return body hashCode="+body.hashCode());
+                }
+                
+              
+                 
+                 EntityUtils.consume(entity);
+            }
+            //response.close();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return body;
+	}
+	
+	   private byte[] resbyte(HttpEntity entity){
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        try {
+	            entity.writeTo(baos);
+	           byte[] bs= baos.toByteArray();
+	           return bs;
+	        } catch (IOException e) {
+	            throw new IllegalStateException(e);
+	        }
+	    }
 	@Override
 	public String doGet(String webUrl, Map<String, String> requestHeader) {
 		logger.info(String.format("run doGet method,weburl=%s", webUrl));
@@ -218,12 +280,26 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
 			HttpEntity entity = response.getEntity();
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK) {
+			    
+			    
 				if (entity != null) {
-					body = EntityUtils.toString(entity, "utf-8");
+				    if(requestHeader!=null){
+	                   // requestHeader.clear();
+	                    Header[]  hs=response.getAllHeaders();
+	                    for(Header h:hs){
+	                        requestHeader.put(h.getName(), h.getValue()); //把头设回去
+	                    }
+	                }
+					//body = EntityUtils.toString(entity, "utf-8");
+				    body=responseAsString(entity);
+				    System.out.println("init return body hashCode="+body.hashCode());
 				}
-				EntityUtils.consume(entity);
+				
+			  
+			     
+			     EntityUtils.consume(entity);
 			}
-			response.close();
+			//response.close();
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -233,6 +309,23 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
 		return body;
 	}
 
+
+	  private String responseAsString(HttpEntity entity) {
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        try {
+	            entity.writeTo(baos);
+	           byte[] bs= baos.toByteArray();
+	           System.out.println("init byte bs hashCode "+bs.hashCode()+" bs size="+bs.length);
+
+
+	            String s= new String(bs, "UTF-8");
+	            
+	            return s;
+	        } catch (IOException e) {
+	            throw new IllegalStateException(e);
+	        }
+	    }
+	  
 	@Override
 	public String doGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
 		logger.info(String.format("run doGet method,weburl=%s", webUrl));

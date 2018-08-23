@@ -33,4 +33,6 @@ public interface OpenApiHttpClientService {
 
     public String HttpPost(String url, String method, Map paramMap);
 */
+    
+    public byte[] doGet2(String webUrl, Map<String, String> requestHeader) ;
 }

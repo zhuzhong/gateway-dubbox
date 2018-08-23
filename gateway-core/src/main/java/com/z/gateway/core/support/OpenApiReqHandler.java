@@ -51,7 +51,8 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
         String routeBeanKey = request.getRouteBeanKey();
         OpenApiRouteBean routeBean = (OpenApiRouteBean) openApiContext.get(routeBeanKey);
 
-        routeBean.setServiceRsp(doInvokeBackService(routeBean)); // 返回值
+        //routeBean.setServiceRsp(doInvokeBackService(routeBean)); // 返回值
+        routeBean.setReturnContent(doInvokeBackService2(routeBean));
         if (logger.isDebugEnabled()) {
             logger.info(String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
                     System.currentTimeMillis(), (System.currentTimeMillis() - currentTime) , httpSessionBean));
@@ -59,6 +60,41 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
         return false;
     }
 
+    
+    /**
+     * 根据routeBean信息，通过httpclient调用后端信息，然后将返回值构建成string
+     * 
+     * @param bean
+     * @return
+     */
+    private byte[] doInvokeBackService2(OpenApiRouteBean bean) {
+        logger.info("step5...");
+        byte[] serviceRspData = null; // 后端服务返回值
+        String operationType = bean.getOperationType();
+        String requestMethod = bean.getRequestMethod();
+
+        if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
+            
+        } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
+            
+        } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
+            logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
+            ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
+            
+            if (apiInfo == null) {
+                return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(), bean.getVersion()).getBytes();
+            }
+            apiInfo.setTargetUrl(bean.getTargetUrl());
+            apiInfo.setRequestMethod(bean.getRequestMethod());
+            if (CommonCodeConstants.REQUEST_METHOD.GET.name().equalsIgnoreCase(requestMethod)) { // get请求
+                String url = apiInfo.getUrl();
+                url = UrlUtil.dealUrl(url, bean.getThdApiUrlParams());
+                serviceRspData = apiHttpClientService.doGet2(url,bean.getReqHeader());
+
+            } 
+        } 
+        return serviceRspData;
+    }
     /**
      * 根据routeBean信息，通过httpclient调用后端信息，然后将返回值构建成string
      * 
