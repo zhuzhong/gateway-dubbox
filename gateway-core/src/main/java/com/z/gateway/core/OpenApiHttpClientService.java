@@ -13,7 +13,7 @@ import java.util.Map;
 public interface OpenApiHttpClientService {
 
     // get请求
-    public String doGet(String webUrl,Map<String,String> requestHeader);
+    public String/*string 使用base64编码，使用时需要base64解码*/ doGet(String webUrl,Map<String,String> requestHeader);
     public String doGet(String webUrl, Map<String,String> paramMap,Map<String,String> requestHeader);
     public String doHttpsGet(String webUrl,Map<String,String> requestHeader);
     

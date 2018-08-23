@@ -203,34 +203,14 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             entity.writeTo(baos);
-            byte[] bs = baos.toByteArray();
-            
-            FileOutputStream fos=new FileOutputStream("e:/test1.jpg");
-            fos.write(bs);
-            fos.flush();
-            fos.close();
-            
-          String result=  org.apache.commons.codec.binary.Base64.encodeBase64String(bs);
-          byte[] bsnew= org.apache.commons.codec.binary.Base64.decodeBase64(result);
-          
-            /*sun.misc.BASE64Encoder be=new sun.misc.BASE64Encoder();
-            String result=be.encode(bs);
-            
-            sun.misc.BASE64Decoder db=new sun.misc.BASE64Decoder();
-                byte[] bsnew=db.decodeBuffer(result);*/
-                fos=new FileOutputStream("e:/test2.jpg");
-                fos.write(bsnew);
-                fos.flush();
-                fos.close();
-            
-            
-            
+            byte[] bs = baos.toByteArray();           
+          String result=  org.apache.commons.codec.binary.Base64.encodeBase64String(bs);         
             return result;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
-    private byte[] resbyte2(HttpEntity entity) {
+/*    private byte[] resbyte2(HttpEntity entity) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             entity.writeTo(baos);
@@ -244,11 +224,11 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
           String result=  org.apache.commons.codec.binary.Base64.encodeBase64String(bs);
           byte[] bsnew= org.apache.commons.codec.binary.Base64.decodeBase64(result);
           
-            /*sun.misc.BASE64Encoder be=new sun.misc.BASE64Encoder();
+            sun.misc.BASE64Encoder be=new sun.misc.BASE64Encoder();
             String result=be.encode(bs);
             
             sun.misc.BASE64Decoder db=new sun.misc.BASE64Decoder();
-                byte[] bsnew=db.decodeBuffer(result);*/
+                byte[] bsnew=db.decodeBuffer(result);
                 fos=new FileOutputStream("e:/test2.jpg");
                 fos.write(bsnew);
                 fos.flush();
@@ -260,7 +240,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-    }
+    }*/
 
     @Override
     public String doGet(String webUrl, Map<String, String> requestHeader) {
