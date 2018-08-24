@@ -18,15 +18,16 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
     }
 
     private void initRouteBean(OpenApiHttpRequestBean request, OpenApiContext openApiContext) {
+        logger.info("init 路由bean ");
         OpenApiRouteBean routeBean = null;
-        logger.info("iniApiRouteBean，这一步可以校验token,当然这个根据我们的实际情况去实现");
+   
         /*
          * String accessToken = request.getAppToken(); if
          * (StringUtils.isBlank(accessToken)) { throw new
          * OpenApiException(OauthErrorEnum.ACCESSTOKEN.getErrCode(),
          * OauthErrorEnum.ACCESSTOKEN.getErrMsg()); }
          */
-        logger.info("init 路由bean ");
+   
         routeBean = new OpenApiRouteBean();
         routeBean.setTraceId(request.getTraceId()); // 内部请求id,利于跟踪
         routeBean.setApiId(request.getApiId());// 请求api_id
@@ -83,7 +84,7 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
      * this.cacheService = cacheService; }
      */
 
-    private void validateParam(OpenApiHttpRequestBean requestBean) {
+    protected void validateParam(OpenApiHttpRequestBean requestBean) {
         /*
          * String appId = requestBean.getAppId(); if
          * (StringUtils.isBlank(appId)) { // appId为空
@@ -98,7 +99,7 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
          * setError(OauthErrorEnum.API_ID.getErrCode(),
          * OauthErrorEnum.API_ID.getErrMsg(), requestBean); return; }
          */
-
+        logger.info("validateParam，这一步可以校验token,当然这个根据我们的实际情况去实现");
     }
 
     // step1
