@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.z.gateway.core;
+package com.z.gateway.common;
 
 import java.io.Serializable;
 import java.util.Map;

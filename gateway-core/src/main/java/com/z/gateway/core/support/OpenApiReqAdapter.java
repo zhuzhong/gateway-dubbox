@@ -5,8 +5,8 @@ import java.util.Map;
 import org.apache.commons.chain.Context;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
+import com.z.gateway.common.OpenApiRouteBean;
 import com.z.gateway.core.AbstractOpenApiHandler;
-import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
 import com.z.gateway.service.AuthenticationService;
@@ -102,7 +102,7 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
     }
 
     // step1
-    private void authRequestBean(OpenApiHttpRequestBean requestBean) {
+    private void authRequestBean(OpenApiRouteBean requestBean) {
         // 对于请求信息进行审计
         logger.info("authRequestBean权限校验...");
         if (this.authenticationService != null) {
@@ -123,10 +123,12 @@ public class OpenApiReqAdapter extends AbstractOpenApiHandler {
 
         // 参数校验
         validateParam(request);
-        // 权限校验
-        authRequestBean(request);
+       
 
-        initRouteBean(httpSessionBean.getRequest(), openApiContext); // 初始化路由bean
+        initRouteBean(request, openApiContext); // 初始化路由bean
+        OpenApiRouteBean routeBean = (OpenApiRouteBean) openApiContext.get(request.getRouteBeanKey());
+        // 权限校验
+        authRequestBean(routeBean);
         if (logger.isDebugEnabled()) {
             logger.info(
                     String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",

@@ -5,8 +5,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
+import com.z.gateway.common.OpenApiRouteBean;
 import com.z.gateway.core.AbstractOpenApiHandler;
-import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
 
