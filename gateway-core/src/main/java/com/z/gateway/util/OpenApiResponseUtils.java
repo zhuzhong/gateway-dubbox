@@ -43,7 +43,7 @@ public class OpenApiResponseUtils {
          */
         try (OutputStream os = response.getOutputStream()) {
             String bs = requestBean.getReturnContent();
-            byte[] bsb= org.apache.commons.codec.binary.Base64.decodeBase64(bs);
+            byte[] bsb= StringResponseUtil.decodeResp(bs);
             if (bs != null) {
                 os.write(bsb);
                 os.flush();

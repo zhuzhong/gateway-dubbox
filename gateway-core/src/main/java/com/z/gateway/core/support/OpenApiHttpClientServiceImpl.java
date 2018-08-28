@@ -4,7 +4,6 @@
 package com.z.gateway.core.support;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.z.gateway.core.OpenApiHttpClientService;
+import com.z.gateway.util.StringResponseUtil;
 
 /**
  * @author sunff
@@ -184,7 +184,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
                         }
                     }
                     // 按指定编码转换结果实体为String类型
-                    body = resbyte(entity);
+                    body = byte2String(entity);
                 }
                 EntityUtils.consume(entity);
 
@@ -199,12 +199,12 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         return body;
     }
 
-    private String resbyte(HttpEntity entity) {
+    private String byte2String(HttpEntity entity) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             entity.writeTo(baos);
             byte[] bs = baos.toByteArray();           
-          String result=  org.apache.commons.codec.binary.Base64.encodeBase64String(bs);         
+          String result=  StringResponseUtil.encodeResp(bs);   
             return result;
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -272,7 +272,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
                         }
                     }
                     // body = EntityUtils.toString(entity, "utf-8");
-                    body = resbyte(entity);
+                    body = byte2String(entity);
                     System.out.println("init return body hashCode=" + body.hashCode());
                 }
 

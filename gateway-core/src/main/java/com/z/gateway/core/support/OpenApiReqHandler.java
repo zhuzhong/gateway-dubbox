@@ -6,8 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.z.gateway.common.OpenApiHttpRequestBean;
 import com.z.gateway.common.OpenApiRouteBean;
 import com.z.gateway.common.entity.ApiInterface;
-import com.z.gateway.common.exception.OauthErrorEnum;
-import com.z.gateway.common.exception.OpenApiException;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.core.AbstractOpenApiHandler;
 import com.z.gateway.core.OpenApiHttpClientService;
