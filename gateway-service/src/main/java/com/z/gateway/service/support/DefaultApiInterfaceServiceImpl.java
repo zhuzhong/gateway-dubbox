@@ -3,18 +3,18 @@
  */
 package com.z.gateway.service.support;
 
-import com.z.gateway.common.entity.ApiInterface;
-import com.z.gateway.common.util.CommonCodeConstants;
-import com.z.gateway.service.ApiInterfaceService;
+import com.z.gateway.common.entity.ApiServerInfo;
+import com.z.gateway.service.ApiServerInfoReq;
+import com.z.gateway.service.ApiServerInfoService;
 
 /**
  * @author zhuzhong
  *
  */
-public class DefaultApiInterfaceServiceImpl implements ApiInterfaceService {
+public class DefaultApiInterfaceServiceImpl implements ApiServerInfoService {
 
     @Override
-    public ApiInterface queryApiInterfaceByApiId(String apiId, String version) {
+    public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
    
         return null;
     }

@@ -1,11 +1,12 @@
-package com.z.gateway.service.support;
+package com.z.gateway.service.lb.support;
 
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.z.gateway.service.LoadBalanceService;
+import com.z.gateway.service.lb.LbKey;
+import com.z.gateway.service.lb.LoadBalanceService;
 
 /**
  * 最少活动的
@@ -20,7 +21,7 @@ public class LeastActiveLoadBalanceImpl implements LoadBalanceService {
     private final Random random = new Random();
 
     @Override
-    public String chooseOne(String context, String version, List<String> hosts) {
+    public String chooseOne(LbKey key, List<String> hosts) {
         if (hosts == null || hosts.size() == 0) {
             return null;
         }
@@ -32,7 +33,7 @@ public class LeastActiveLoadBalanceImpl implements LoadBalanceService {
 
         for (int i = 0; i < length; i++) {
             String invoker = hosts.get(i);
-            int active = getActive(context, invoker); // 活跃数
+            int active = getActive(key, invoker); // 活跃数
 
             if (leastActive == -1 || active < leastActive) { // 发现更小的活跃数，重新开始
                 leastActive = active; // 记录最小活跃数
@@ -53,12 +54,12 @@ public class LeastActiveLoadBalanceImpl implements LoadBalanceService {
             // 如果活动数都相等，则随机分配
             host = hosts.get(leastIndexs[random.nextInt(leastCount)]);
         }
-        addActive(context, host);
+        addActive(key, host);
         return host;
 
     }
 
-    private int getActive(String context, String host) {
+    private int getActive(LbKey context, String host) {
         AtomicInteger active = usedTimes.get(countKey(context, host));
         if (active == null) {
             usedTimes.put(countKey(context, host), new AtomicInteger(0));
@@ -68,11 +69,11 @@ public class LeastActiveLoadBalanceImpl implements LoadBalanceService {
         }
     }
 
-    private void addActive(String context, String host) {
-        usedTimes.get(countKey(context, host)).incrementAndGet();
+    private void addActive(LbKey key, String host) {
+        usedTimes.get(countKey(key, host)).incrementAndGet();
     }
 
-    private String countKey(String context, String host) {
-        return context + "-" + host;
+    private String countKey(LbKey key, String host) {
+        return key.getApiId() + "-" + host;
     }
 }

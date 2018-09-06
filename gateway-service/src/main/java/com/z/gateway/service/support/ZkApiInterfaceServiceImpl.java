@@ -11,24 +11,27 @@ import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.z.gateway.common.entity.ApiInterface;
+import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
-import com.z.gateway.service.ApiInterfaceService;
-import com.z.gateway.service.LoadBalanceService;
+import com.z.gateway.service.ApiServerInfoReq;
+import com.z.gateway.service.ApiServerInfoService;
+import com.z.gateway.service.lb.LbKey;
+import com.z.gateway.service.lb.LoadBalanceService;
+import com.z.gateway.service.lb.support.RandomLoadBalanceImpl;
 
 /**
  * @author Administrator
  *
  */
-public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
+public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
 
     @Override
-    public ApiInterface queryApiInterfaceByApiId(String apiId, String version) {
-        List<String> sets = hosts.get(apiId);
+    public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
+        List<String> sets = hosts.get(req.getApiId());
         if (sets != null) {
-            String hostAddress = loadBalancerService.chooseOne(apiId, version, sets);
-            ApiInterface apiInterface = new ApiInterface();
-            apiInterface.setApiId(apiId);
+            String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);
+            ApiServerInfo apiInterface = new ApiServerInfo();
+            apiInterface.setApiId(req.getApiId());
             apiInterface.setProtocol(CommonCodeConstants.HTTP);
             apiInterface.setHostAddress(hostAddress);
             return apiInterface;

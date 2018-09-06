@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.z.gateway.service;
+package com.z.gateway.service.lb;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ import java.util.List;
 public interface LoadBalanceService {
 
     
-    String chooseOne(String apiId,String version,List<String> set);
+    String chooseOne(LbKey key,List<String> set);
 }

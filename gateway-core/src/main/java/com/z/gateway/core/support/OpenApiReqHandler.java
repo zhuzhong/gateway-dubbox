@@ -5,13 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
 import com.z.gateway.common.OpenApiRouteBean;
-import com.z.gateway.common.entity.ApiInterface;
+import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.core.AbstractOpenApiHandler;
 import com.z.gateway.core.OpenApiHttpClientService;
 import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
-import com.z.gateway.service.ApiInterfaceService;
+import com.z.gateway.service.ApiServerInfoReq;
+import com.z.gateway.service.ApiServerInfoService;
 import com.z.gateway.util.StringResponseUtil;
 import com.z.gateway.util.UrlUtil;
 
@@ -19,11 +20,11 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
 
     private final int maxReqDataLth = 500;
 
-    private ApiInterfaceService apiInterfaceService;
+    private ApiServerInfoService apiInterfaceService;
 
     private OpenApiHttpClientService apiHttpClientService;
 
-    public void setApiInterfaceService(ApiInterfaceService apiInterfaceService) {
+    public void setApiInterfaceService(ApiServerInfoService apiInterfaceService) {
         this.apiInterfaceService = apiInterfaceService;
     }
 
@@ -110,10 +111,10 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
         if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
 
         } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
-
+ 
         } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
             logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
-            ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
+            ApiServerInfo apiInfo = apiInterfaceService.queryApiInterfaceByApiId(new ApiServerInfoReq(bean.getApiId(), bean.getVersion()));
 
             if (apiInfo == null) {
                 return StringResponseUtil.encodeResp(

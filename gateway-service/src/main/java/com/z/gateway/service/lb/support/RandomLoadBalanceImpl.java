@@ -1,12 +1,10 @@
-/**
- * 
- */
-package com.z.gateway.service.support;
+package com.z.gateway.service.lb.support;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.z.gateway.service.LoadBalanceService;
+import com.z.gateway.service.lb.LbKey;
+import com.z.gateway.service.lb.LoadBalanceService;
 
 /**
  * @author Administrator
@@ -15,7 +13,7 @@ import com.z.gateway.service.LoadBalanceService;
 public class RandomLoadBalanceImpl implements LoadBalanceService {
 
     @Override
-    public String chooseOne(String apiId, String version,List<String> set) {
+    public String chooseOne(LbKey key,List<String> set) {
 
         return getRandomElement(set);
     }
