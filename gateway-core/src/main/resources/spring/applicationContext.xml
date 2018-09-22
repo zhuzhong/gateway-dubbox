@@ -69,8 +69,9 @@
 
 	<bean id="serviceReqHandler" class="com.z.gateway.core.support.OpenApiReqHandler">
 <!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
-		<property name="apiInterfaceService" ref="apiInterfaceServiceImpl"></property>
-		<property name="apiHttpClientService" ref="apiHttpClientService"></property>
+		<property name="apiInterfaceService" ref="apiInterfaceServiceImpl" />
+		<property name="apiHttpClientService" ref="apiHttpClientService" />
+		<property name="useHystrix" value="true" />
 	</bean>
 
 
@@ -82,7 +83,7 @@
 	<bean id="apiHttpClientService"
 		class="com.z.gateway.core.support.OpenApiHttpClientServiceImpl"
 		init-method="init" >
-		<property name="usingHead" value="true"></property>
+		<property name="usingHead" value="false"></property>
 		</bean>
 
 	<!-- <bean id="apiHttpClientService" class="com.z.gateway.core.support.OpenApiHttpAsynClientServiceImpl" 
