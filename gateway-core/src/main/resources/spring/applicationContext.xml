@@ -83,7 +83,7 @@
 	<bean id="apiHttpClientService"
 		class="com.z.gateway.core.support.OpenApiHttpClientServiceImpl"
 		init-method="init" >
-		<property name="usingHead" value="false"></property>
+		<property name="usingHead" value="${usingHead}"></property>
 		</bean>
 
 	<!-- <bean id="apiHttpClientService" class="com.z.gateway.core.support.OpenApiHttpAsynClientServiceImpl" 
@@ -98,13 +98,22 @@
 	<bean id="idService" class="com.z.gateway.service.support.DefaultIdServiceImpl" />
 	<bean id="authenticationService"
 		class="com.z.gateway.service.support.DefaultAuthenticationServiceImpl" />
-	<!-- <bean id="apiInterfaceServiceImpl" -->
-	<!-- class="com.z.gateway.service.support.TestApiInterfaceServiceImpl" 
-		/> -->
+	
+	
+	
+	<!-- <bean id="apiInterfaceServiceImpl" 
+	 class="com.z.gateway.service.support.TestApiInterfaceServiceImpl" 
+		/> 
 
 	<bean id="apiInterfaceServiceImpl"
 		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl">
-	
 	</bean>
+	-->
+	<bean id="apiInterfaceServiceImpl"
+		class="com.z.gateway.service.support.ZkApiInterfaceServiceImpl">
+		<property name="rootPath" value="${zk.rootpath}" />
+		<property name="zkServers" value="${zk.zkservers}" />
+	</bean>
+	
 
 </beans>
