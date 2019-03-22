@@ -28,7 +28,7 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 		OpenApiHttpRequestBean request = httpSessionBean.getRequest();
 		long currentTime = System.currentTimeMillis();
 		
-		logger.debug(String.format(
+		logger.info(String.format(
 					"begin run doExecuteBiz,currentTime=%d,httpSessonBean=%s",
 					currentTime, httpSessionBean));
 		
@@ -44,14 +44,14 @@ public class OpenApiRspHandler extends AbstractOpenApiHandler {
 		request.setReturnContent(routeBean.getReturnContent());
 		
 		
-		logger.debug(String
+		logger.info(String
 					.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
 							System.currentTimeMillis(),
 							(System.currentTimeMillis() - currentTime),
 							httpSessionBean));
 		
 
-		return false;
+		return true;
 	}
 
 	

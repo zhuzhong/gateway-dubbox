@@ -25,8 +25,10 @@ import com.z.gateway.service.lb.support.RandomLoadBalanceImpl;
  */
 public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
 
+	
     @Override
     public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
+    	logger.info("现在从zk中获取相应的后端服务器...");
         List<String> sets = hosts.get(req.getApiId());
         if (sets != null) {
             String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);

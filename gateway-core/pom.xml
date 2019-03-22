@@ -2,11 +2,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.z.gateway</groupId>
+	<parent>
+		<groupId>com.z.gateway</groupId>
+		<artifactId>gateway-dubbox</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 	<artifactId>gateway-core</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>gateway Maven Webapp</name>
+	<name>gateway-core</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -16,12 +19,12 @@
 	</properties>
 	<dependencies>
 
-<!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-core -->
-<dependency>
-    <groupId>com.netflix.hystrix</groupId>
-    <artifactId>hystrix-core</artifactId>
-    <version>1.4.26</version>
-</dependency>
+		<!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-core -->
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-core</artifactId>
+			<version>1.4.26</version>
+		</dependency>
 
 
 		<dependency>
@@ -91,7 +94,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -99,6 +102,23 @@
 		</dependency>
 
 
+
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+			<version>1.0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -112,6 +132,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>gateway</finalName>
+		<finalName>gw</finalName>
 	</build>
 </project>

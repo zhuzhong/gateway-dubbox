@@ -42,6 +42,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.z.gateway.core.OpenApiHttpClientService;
 import com.z.gateway.util.StringResponseUtil;
 
@@ -171,7 +172,15 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         try {
             // 执行请求操作，并拿到结果（同步阻塞）
             CloseableHttpResponse response = getHttpClient().execute(httpPost);
+            try {
+            	 logger.info("response响应="+JSON.toJSONString(response));
+            }catch (Exception e) {
+				logger.info("log response");
+				e.printStackTrace();
+			}
+           
             int statusCode = response.getStatusLine().getStatusCode();
+            logger.info("statusCode="+statusCode);
             if (statusCode == HttpStatus.SC_OK) {
                 // 获取结果实体
                 HttpEntity entity = response.getEntity();

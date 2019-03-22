@@ -5,7 +5,7 @@
 	<artifactId>gateway-dubbox</artifactId>
 	<packaging>pom</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>gateway Maven Webapp</name>
+	<name>gateway-dubbox</name>
 	<url>http://maven.apache.org</url>
 
 	 <modules>

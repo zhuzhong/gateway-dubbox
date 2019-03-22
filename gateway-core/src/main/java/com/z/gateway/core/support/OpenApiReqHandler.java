@@ -135,13 +135,14 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 // String contentType =
                 // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
-                    return apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(), bean.getReqHeader());
+                	serviceRspData= apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(), bean.getReqHeader());
                 } else {
-                    return apiHttpClientService.doPost(url, bean.getServiceReqData(), bean.getReqHeader());
+                	serviceRspData= apiHttpClientService.doPost(url, bean.getServiceReqData(), bean.getReqHeader());
                 }
       
             }
         }
+        logger.info("serviceRspData="+serviceRspData);
         return serviceRspData;
     }
 }
