@@ -29,6 +29,10 @@ public class ApiServerInfoReq implements Serializable {
         this.apiId = apiId;
         this.version = version;
     }
+	@Override
+	public String toString() {
+		return "ApiServerInfoReq [apiId=" + apiId + ", version=" + version + "]";
+	}
     
     
 }

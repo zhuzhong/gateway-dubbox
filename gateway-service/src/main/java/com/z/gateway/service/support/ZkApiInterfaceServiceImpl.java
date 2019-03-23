@@ -28,7 +28,7 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
 	
     @Override
     public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
-    	logger.info("现在从zk中获取相应的后端服务器...");
+    	logger.info("现在从zk中获取相应的后端服务器,req={}",req);
         List<String> sets = hosts.get(req.getApiId());
         if (sets != null) {
             String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);
@@ -68,6 +68,7 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
         if (loadBalancerService == null) {
             loadBalancerService = new RandomLoadBalanceImpl();
         }
+        logger.info("rootPath={},init hosts",rootPath);
         runaway(zkClient, rootPath);
     }
 
