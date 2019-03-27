@@ -93,6 +93,19 @@ http://localhost:10000/restapi/test
 
 目前这个虚拟服务注册的参数很少，可以想像nginx所需要一切参数都可以通过该服务进行初始化。通过nginx作为该网关系统的反向代理，可以通过管理平台更改相应的nginx参数，进行导流,系统下线等操作。
 
+##关于ZkApiInterfaceServiceImpl配置说明
+
+		<bean id="apiInterfaceServiceImpl"
+		class="com.z.gateway.service.support.ZkApiInterfaceServiceImpl" init-method="init">
+		<property name="rootPath" value="${zk.rootpath}" />
+		<property name="zkServers" value="${zk.zkservers}" />
+	</bean>
+	
+	后端服务dubbo注册中心使用dubbo示例
+	<dubbo:registry protocol="${dubbo.registry.protocol}" address="$		{dubbo.registry.address}" group="${dubbo.group}" check="false" />
+	
+	则ZkApiInterfaceServiceImpl中rootPath参数为 dubbox 注册中心zookeeper时配的group参数值；
+	zk.zkservers  为address值
 
 ## 并发限制、限流
 
