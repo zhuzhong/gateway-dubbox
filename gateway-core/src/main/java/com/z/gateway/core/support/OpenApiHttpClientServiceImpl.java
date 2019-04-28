@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.z.gateway.core.OpenApiHttpClientService;
-import com.z.gateway.util.StringResponseUtil;
+
 
 /**
  * @author sunff
@@ -193,7 +193,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
                         }
                     }
                     // 按指定编码转换结果实体为String类型
-                    body = byte2String(entity);
+                    body = EntityUtils.toString(entity, "utf-8");
                 }
                 EntityUtils.consume(entity);
 
@@ -208,17 +208,17 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
         return body;
     }
 
-    private String byte2String(HttpEntity entity) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            entity.writeTo(baos);
-            byte[] bs = baos.toByteArray();           
-          String result=  StringResponseUtil.encodeResp(bs);   
-            return result;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+//    private String byte2String(HttpEntity entity) {
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        try {
+//            entity.writeTo(baos);
+//            byte[] bs = baos.toByteArray();           
+//          String result=  StringResponseUtil.encodeResp(bs);   
+//            return result;
+//        } catch (IOException e) {
+//            throw new IllegalStateException(e);
+//        }
+//    }
 /*    private byte[] resbyte2(HttpEntity entity) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -280,9 +280,10 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
                             requestHeader.put(h.getName(), h.getValue()); // 把头设回去
                         }
                     }
-                    // body = EntityUtils.toString(entity, "utf-8");
-                    body = byte2String(entity);
-                    System.out.println("init return body hashCode=" + body.hashCode());
+                     body = EntityUtils.toString(entity, "utf-8");
+                   // body = byte2String(entity);
+                    //System.out.println("init return body hashCode=" + body.hashCode());
+                    //System.out.println("init return body=" + body);
                 }
 
                 EntityUtils.consume(entity);
@@ -299,7 +300,7 @@ public class OpenApiHttpClientServiceImpl implements OpenApiHttpClientService {
 
     @Override
     public String doGet(String webUrl, Map<String, String> paramMap, Map<String, String> requestHeader) {
-        logger.info(String.format("run doGet method,weburl=%s", webUrl));
+        logger.info(String.format("run doGet2 method,weburl=%s", webUrl));
         String url = webUrl;
         // 设置编码格式
         String queryString = createLinkString(paramMap);

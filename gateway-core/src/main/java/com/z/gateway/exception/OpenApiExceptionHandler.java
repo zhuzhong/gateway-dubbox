@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.z.gateway.common.OpenApiHttpRequestBean;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.util.OpenApiResponseUtils;
-import com.z.gateway.util.StringResponseUtil;
+//import com.z.gateway.util.StringResponseUtil;
 
 public class OpenApiExceptionHandler implements HandlerExceptionResolver {
 
@@ -22,8 +22,8 @@ public class OpenApiExceptionHandler implements HandlerExceptionResolver {
 				.getAttribute(CommonCodeConstants.REQ_BEAN_KEY);
 
 		//reqBean.setPrintStr(JSON.toJSONString(ex));
-		reqBean.setReturnContent(StringResponseUtil.encodeResp(ex.getMessage().getBytes()));
-		//reqBean.setReturnContent(ex.getMessage().getBytes());
+		//reqBean.setReturnContent(StringResponseUtil.encodeResp(ex.getMessage().getBytes()));
+		reqBean.setReturnContent(ex.getMessage());
 		OpenApiResponseUtils.writeRsp(response, reqBean);
 
 		return null;

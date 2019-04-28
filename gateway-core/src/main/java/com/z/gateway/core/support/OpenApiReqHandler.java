@@ -13,7 +13,7 @@ import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
 import com.z.gateway.service.ApiServerInfoReq;
 import com.z.gateway.service.ApiServerInfoService;
-import com.z.gateway.util.StringResponseUtil;
+//import com.z.gateway.util.StringResponseUtil;
 import com.z.gateway.util.UrlUtil;
 
 public class OpenApiReqHandler extends AbstractOpenApiHandler {
@@ -93,9 +93,11 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                     .queryApiInterfaceByApiId(new ApiServerInfoReq(bean.getApiId(), bean.getVersion()));
 
             if (apiInfo == null) {
-                return StringResponseUtil
-                        .encodeResp(String.format("this apiId=%s,version=%s has off line,please use another one",
-                                bean.getApiId(), bean.getVersion()).getBytes());
+//                return StringResponseUtil
+//                        .encodeResp(String.format("this apiId=%s,version=%s has off line,please use another one",
+//                                bean.getApiId(), bean.getVersion()).getBytes());
+                return String.format("this apiId=%s,version=%s has off line,please use another one",
+                        bean.getApiId(), bean.getVersion());
             }
             apiInfo.setTargetUrl(bean.getTargetUrl());
             apiInfo.setRequestMethod(bean.getRequestMethod());

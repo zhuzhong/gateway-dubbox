@@ -11,7 +11,8 @@
 	 <modules>
 		<module>gateway-common</module>
 		<module>gateway-service</module>
-		<module>gateway-core</module>
-		
+		<module>gateway-core</module>	
 	</modules>
+	
+	
 </project>

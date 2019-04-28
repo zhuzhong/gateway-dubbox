@@ -19,7 +19,6 @@
 	</properties>
 	<dependencies>
 
-		<!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-core -->
 		<dependency>
 			<groupId>com.netflix.hystrix</groupId>
 			<artifactId>hystrix-core</artifactId>
@@ -102,7 +101,11 @@
 		</dependency>
 
 
-
+	<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -114,11 +117,7 @@
 			<artifactId>logback-access</artifactId>
 			<version>1.0.9</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.2</version>
-		</dependency>
+	
 	</dependencies>
 
 	<build>

@@ -15,8 +15,7 @@ public class DefaultApiInterfaceServiceImpl implements ApiServerInfoService {
 
     @Override
     public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
-   
-        return null;
+    	return null;
     }
 
 }

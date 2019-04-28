@@ -7,8 +7,8 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -32,6 +32,8 @@ import com.z.gateway.util.OpenApiResponseUtils;
  */
 public class AsynOpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, ApplicationContextAware {
 
+	private static Logger logger = LoggerFactory.getLogger(AsynOpenApiAcceptHandlerImpl.class);
+	
     private ThreadPoolTaskExecutor taskExecutor;
     private IdService idService;
 
@@ -43,7 +45,7 @@ public class AsynOpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, Appli
         this.idService = idService;
     }
 
-    private static Log logger = LogFactory.getLog(AsynOpenApiAcceptHandlerImpl.class);
+    
 
     @Override
     public void acceptRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -61,11 +63,9 @@ public class AsynOpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, Appli
                     String traceId = idService.genInnerRequestId();
                     reqBean.setTraceId(traceId);
                     asynRequest.setAttribute(CommonCodeConstants.REQ_BEAN_KEY, reqBean); // 重新设置bean
-                    if (logger.isInfoEnabled()) {
-                        logger.info(String.format("requestId=%s request begin,reqeust=%s", traceId,
-                                JSON.toJSONString(reqBean)));
-                    }
-
+                  
+                    logger.info("requestId={} request begin,reqeust={}",traceId,JSON.toJSONString(reqBean));
+                    
                     OpenApiHttpSessionBean sessionBean = new OpenApiHttpSessionBean(reqBean);
                     String operationType = sessionBean.getRequest().getOperationType();
                     OpenApiHandlerExecuteTemplate handlerExecuteTemplate = applicationContext.getBean(operationType,
@@ -79,8 +79,10 @@ public class AsynOpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, Appli
                     }
                     // 写入响应
                     OpenApiResponseUtils.writeRsp((HttpServletResponse) context.getResponse(), sessionBean.getRequest());
+                    logger.info("write content end...");
                 } finally {
                     context.complete();
+                    logger.info("request complete...");
                 }
 
             }

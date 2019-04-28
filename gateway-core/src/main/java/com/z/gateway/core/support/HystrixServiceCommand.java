@@ -16,7 +16,7 @@ import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.core.OpenApiHttpClientService;
 import com.z.gateway.service.ApiServerInfoReq;
 import com.z.gateway.service.ApiServerInfoService;
-import com.z.gateway.util.StringResponseUtil;
+
 import com.z.gateway.util.UrlUtil;
 
 /**
@@ -95,9 +95,12 @@ public class HystrixServiceCommand extends HystrixCommand<String> {
                     .queryApiInterfaceByApiId(new ApiServerInfoReq(routeBean.getApiId(), routeBean.getVersion()));
 
             if (apiInfo == null) {
-                return StringResponseUtil
-                        .encodeResp(String.format("this apiId=%s,version=%s has off line,please use another one",
-                                routeBean.getApiId(), routeBean.getVersion()).getBytes());
+//                return StringResponseUtil
+//                        .encodeResp(String.format("this apiId=%s,version=%s has off line,please use another one",
+//                                routeBean.getApiId(), routeBean.getVersion()).getBytes());
+                
+               return String.format("this apiId=%s,version=%s has off line,please use another one",
+                        routeBean.getApiId(), routeBean.getVersion());
             }
             apiInfo.setTargetUrl(routeBean.getTargetUrl());
             apiInfo.setRequestMethod(routeBean.getRequestMethod());

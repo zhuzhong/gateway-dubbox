@@ -20,14 +20,15 @@
 		type="annotation" expression="org.springframework.stereotype.Controller" 
 		/> </context:component-scan> -->
 
-	<!-- 异步处理servlet3 -->
+	<!-- 异步处理servlet3-->
 	<bean id="openApiAcceptHandlerImpl"
 		class="com.z.gateway.handler.support.AsynOpenApiAcceptHandlerImpl">
 		<property name="idService" ref="idService" />
 		<property name="taskExecutor" ref="taskExecutor" />
-	</bean>
+	</bean> 
 
-	<!-- <bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
+	<!-- 
+	<bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
 		<property name="idService" ref="idService" /> <property name="poolHandler" 
 		ref="poolHandler" /> </bean> -->
 	<bean id="poolHandler" class="com.z.gateway.handler.support.ThreadPoolHandlerImpl">
@@ -101,19 +102,17 @@
 	
 	
 	
-	<!-- <bean id="apiInterfaceServiceImpl" 
-	 class="com.z.gateway.service.support.TestApiInterfaceServiceImpl" 
-		/> 
 
-	<bean id="apiInterfaceServiceImpl"
+
+	<!-- <bean id="apiInterfaceServiceImpl"
 		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl">
-	</bean>
-	-->
-	<bean id="apiInterfaceServiceImpl"
+	</bean> -->
+	<!-- -->
+	 <bean id="apiInterfaceServiceImpl"
 		class="com.z.gateway.service.support.ZkApiInterfaceServiceImpl" init-method="init">
 		<property name="rootPath" value="${zk.rootpath}" />
 		<property name="zkServers" value="${zk.zkservers}" />
-	</bean>
+	</bean> 
 	
 
 </beans>
