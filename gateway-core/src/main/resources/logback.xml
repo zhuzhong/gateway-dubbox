@@ -2,10 +2,10 @@
 <configuration>
 	<appender name="DefaultAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/opt/logs/customer/customer.log</file>
+		<file>/opt/logs/gw/gw.log</file>
 		<append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>/opt/logs/customer/otherdays/customer.%i.log
+			<fileNamePattern>/opt/logs/gw/otherdays/gw.%i.log
 			</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>5</maxIndex>
@@ -23,10 +23,10 @@
 
 	<appender name="customerAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${user.home}/logs/customer/customer.log</file>
+		<file>${user.home}/logs/gw/gw.log</file>
 		<append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>${user.home}/logs/customer/otherdays/customer.%i.log</fileNamePattern>
+			<fileNamePattern>${user.home}/logs/gw/otherdays/gw.%i.log</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>30</maxIndex>
 		</rollingPolicy>
@@ -59,10 +59,10 @@
 	<logger name="java.sql.Statement" level="INFO" />
 	<logger name="java.sql.PreparedStatement" level="INFO" />
 	<logger name="org.springframework" level="INFO" />
-   <logger name="com.z.gateway" level="debug" />
+   <logger name="com.z.gateway" level="INFO" />
    
 	<root>
-		<level value="debug" />
+		<level value="INFO" />
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>
