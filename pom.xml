@@ -11,6 +11,7 @@
 	 <modules>
 		<module>gateway-common</module>
 		<module>gateway-service</module>
+		<module>mvcrest-register</module>
 		<module>gateway-core</module>	
 	</modules>
 	

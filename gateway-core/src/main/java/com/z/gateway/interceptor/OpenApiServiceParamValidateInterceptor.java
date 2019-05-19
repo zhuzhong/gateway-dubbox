@@ -82,7 +82,7 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
     private void parsePostMethod(HttpServletRequest request, OpenApiHttpRequestBean bean) throws IOException {
 
     	
-    	String requestUrl=request.getRequestURI(); // /test/tapi
+    	String requestUrl=request.getRequestURI(); 
     	bean.setRequestUrl(requestUrl);
 
     	 

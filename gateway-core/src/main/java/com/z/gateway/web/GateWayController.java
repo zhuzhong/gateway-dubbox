@@ -32,4 +32,5 @@ public class GateWayController {
        this.acceptHandler.acceptRequest(request, response);
     }
     
+    
 }

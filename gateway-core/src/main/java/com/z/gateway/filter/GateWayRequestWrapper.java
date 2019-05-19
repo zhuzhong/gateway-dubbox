@@ -28,6 +28,9 @@ public class GateWayRequestWrapper extends HttpServletRequestWrapper {
         body = parseInputStream2Byte(request.getInputStream());
     }
 
+    public int length() {
+    	return body.length;
+    }
     private final byte[] body; // 报文
     final static int BUFFER_SIZE = 4096;
 

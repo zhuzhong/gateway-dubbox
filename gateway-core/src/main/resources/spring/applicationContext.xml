@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<description>Spring_Configuration</description>
@@ -20,18 +21,18 @@
 		type="annotation" expression="org.springframework.stereotype.Controller" 
 		/> </context:component-scan> -->
 
-	<!-- 异步处理servlet3-->
+	<!-- 异步处理servlet3 -->
 	<bean id="openApiAcceptHandlerImpl"
 		class="com.z.gateway.handler.support.AsynOpenApiAcceptHandlerImpl">
 		<property name="idService" ref="idService" />
 		<property name="taskExecutor" ref="taskExecutor" />
-	</bean> 
+	</bean>
 
-	<!-- 
-	<bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
+	<!-- <bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
 		<property name="idService" ref="idService" /> <property name="poolHandler" 
 		ref="poolHandler" /> </bean> -->
-	<bean id="poolHandler" class="com.z.gateway.handler.support.ThreadPoolHandlerImpl">
+	<bean id="poolHandler"
+		class="com.z.gateway.handler.support.ThreadPoolHandlerImpl">
 		<property name="taskExecutor" ref="taskExecutor" />
 	</bean>
 	<!-- 配置线程池 -->
@@ -63,56 +64,55 @@
 
 
 
-	<bean id="serviceReqAdapter" class="com.z.gateway.core.support.OpenApiReqAdapter">
-<!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
-		<property name="contextPath" value="${proj.contextPath}"></property>
+	<bean id="serviceReqAdapter"
+		class="com.z.gateway.core.support.OpenApiReqAdapter">
+		<property name="contextPath" value="${proj.contextPath}" />
 	</bean>
 
-	<bean id="serviceReqHandler" class="com.z.gateway.core.support.OpenApiReqHandler">
-<!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
-		<property name="apiInterfaceService" ref="apiInterfaceServiceImpl" />
-		<property name="apiHttpClientService" ref="apiHttpClientService" />
+	<bean id="serviceReqHandler"
+		class="com.z.gateway.core.support.OpenApiReqHandler">
+		<property name="apiInterfaceService"
+			ref="apiInterfaceServiceImpl" />
+		<property name="apiHttpClientService"
+			ref="apiHttpClientService" />
 		<property name="useHystrix" value="${useHystrix}" />
 	</bean>
 
 
 
-	<bean id="serviceRspHandler" class="com.z.gateway.core.support.OpenApiRspHandler">
-<!-- 		<property name="cacheService" ref="cacheServiceImpl"></property> -->
+	<bean id="serviceRspHandler"
+		class="com.z.gateway.core.support.OpenApiRspHandler">
 	</bean>
-	<!-- -->
+
 	<bean id="apiHttpClientService"
 		class="com.z.gateway.core.support.OpenApiHttpClientServiceImpl"
-		init-method="init" >
+		init-method="init">
 		<property name="usingHead" value="${usingHead}"></property>
-		</bean>
-
-	<!-- <bean id="apiHttpClientService" class="com.z.gateway.core.support.OpenApiHttpAsynClientServiceImpl" 
-		init-method="init" /> -->
-
-	<!-- <bean id="cacheServiceImpl"
-		class="com.z.gateway.service.support.DefaultCacheServiceImpl" /> -->
-
+	</bean>
 
 
 	<!-- 不依赖于外部系统即api的服务提供由硬编码完成 -->
-	<bean id="idService" class="com.z.gateway.service.support.DefaultIdServiceImpl" />
+	<bean id="idService"
+		class="com.z.gateway.service.support.DefaultIdServiceImpl" />
 	<bean id="authenticationService"
 		class="com.z.gateway.service.support.DefaultAuthenticationServiceImpl" />
-	
-	
-	
 
 
-	<!-- <bean id="apiInterfaceServiceImpl"
+	<bean id="apiInterfaceServiceImpl"
 		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl">
-	</bean> -->
-	<!-- -->
-	 <bean id="apiInterfaceServiceImpl"
-		class="com.z.gateway.service.support.ZkApiInterfaceServiceImpl" init-method="init">
+		<property name="registryReaderServiceImpls">
+			<list>
+				<ref bean="zkRegistryReaderServiceImpl" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="zkRegistryReaderServiceImpl"
+		class="com.z.gateway.service.support.ZkDubboRegistryReaderServiceImpl"
+		init-method="init">
 		<property name="rootPath" value="${zk.rootpath}" />
 		<property name="zkServers" value="${zk.zkservers}" />
-	</bean> 
-	
+	</bean>
+
 
 </beans>

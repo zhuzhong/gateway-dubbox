@@ -108,4 +108,10 @@ public class ApiServerInfo implements Serializable {
         this.version = version;
     }
 
+	@Override
+	public String toString() {
+		return url;
+	}
+
+    
 }

@@ -5,6 +5,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.ZkClient;
@@ -14,35 +15,42 @@ import org.slf4j.LoggerFactory;
 import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.service.ApiServerInfoReq;
-import com.z.gateway.service.ApiServerInfoService;
-import com.z.gateway.service.lb.LbKey;
-import com.z.gateway.service.lb.LoadBalanceService;
-import com.z.gateway.service.lb.support.RandomLoadBalanceImpl;
+import com.z.gateway.service.RegistryReaderService;
 
-/**
+/**zk dubbo rest服务注册器内容读取器服务实现类
  * @author Administrator
  *
  */
-public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
+public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
 
 	
     @Override
-    public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
+    public List<ApiServerInfo> queryApiInterfaceByApiId(ApiServerInfoReq req) {
     	logger.info("现在从zk中获取相应的后端服务器,req={}",req);
         List<String> sets = hosts.get(req.getApiId());
-        if (sets != null) {
-            String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);
-            ApiServerInfo apiInterface = new ApiServerInfo();
-            apiInterface.setApiId(req.getApiId());
-            apiInterface.setProtocol(CommonCodeConstants.HTTP);
-            apiInterface.setHostAddress(hostAddress);
-            return apiInterface;
+//        if (sets != null) {
+//            String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);
+//            ApiServerInfo apiInterface = new ApiServerInfo();
+//            apiInterface.setApiId(req.getApiId());
+//            apiInterface.setProtocol(CommonCodeConstants.HTTP);
+//            apiInterface.setHostAddress(hostAddress);
+//            return apiInterface;
+//        }
+        
+        if(sets!=null) {
+        	return sets.stream().map(a->{
+        		ApiServerInfo apiInterface = new ApiServerInfo();
+              apiInterface.setApiId(req.getApiId());
+             apiInterface.setProtocol(CommonCodeConstants.HTTP);
+              apiInterface.setHostAddress(a);
+             return apiInterface;
+        	}).collect(Collectors.toList());
         }
         return null;
     }
 
     // --------准备数据部分----------------------------------------------------
-    private static Logger logger = LoggerFactory.getLogger(ZkApiInterfaceServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(ZkDubboRegistryReaderServiceImpl.class);
 
     private static final String REST = "rest";
 
@@ -57,7 +65,7 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
     private String zkServers;
     private ZkClient zkClient;
 
-    private LoadBalanceService loadBalancerService;
+   // private LoadBalanceService loadBalancerService;
 
     public void init() {
         zkClient = new ZkClient(zkServers, 5000);
@@ -65,16 +73,14 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
             rootPath = SLASH + rootPath;
         }
 
-        if (loadBalancerService == null) {
-            loadBalancerService = new RandomLoadBalanceImpl();
-        }
+//        if (loadBalancerService == null) {
+//            loadBalancerService = new RandomLoadBalanceImpl();
+//        }
         logger.info("rootPath={},init hosts",rootPath);
         runaway(zkClient, rootPath);
     }
 
-    public void setLoadBalancerService(LoadBalanceService loadBalancerService) {
-        this.loadBalancerService = loadBalancerService;
-    }
+   
 
     public void setRootPath(String rootPath) {
         this.rootPath = rootPath;
@@ -84,7 +90,7 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
         this.zkServers = zkServers;
     }
 
-    private static final ConcurrentHashMap<String, List<String>> hosts = new ConcurrentHashMap<String, List<String>>();
+    private static final ConcurrentHashMap<String/*context_path*/, List<String/*host:port*/>> hosts = new ConcurrentHashMap<String, List<String>>();
 
     private void runaway(final ZkClient zkClient, final String path) {
         zkClient.unsubscribeAll();
@@ -148,10 +154,20 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
                             });
 
                             List<String> thirdGeneration = zkClient.getChildren(secondNextPath);// 4级子节点
-                                                                                                // /dubbo-online/com.z.test.Testapi/rest://localhost:8080
+                                                    // /dubbo-online/com.z.test.Testapi/providers/rest://localhost:8080/context
                             if (thirdGeneration != null && thirdGeneration.size() > 0) {
                                 for (String thirdChild : thirdGeneration) {
                                     if (thirdChild.startsWith(REST)) {
+                                    	
+                                    	zkClient.subscribeChildChanges(thirdChild, new IZkChildListener() {
+											
+											@Override
+											public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
+												 logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+				                                    // 4级节点的子节点发生
+				                                 runaway(zkClient, path); // 重新再来
+											}
+										});
                                         /*
                                          * 样例
                                          * rest://10.148.16.27:8480/demo/
@@ -177,13 +193,13 @@ public class ZkApiInterfaceServiceImpl implements ApiServerInfoService {
 
         }
 
-        synchronized (this) {
+        synchronized (PROVIDERS) {
             hosts.clear();
             hosts.putAll(newHosts);
         }
     }
 
-    private static class ServiceProvider {
+     static class ServiceProvider {
 
         private String host;
         private String contextPath;
