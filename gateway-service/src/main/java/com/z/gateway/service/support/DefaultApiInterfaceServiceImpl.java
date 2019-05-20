@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.z.gateway.common.entity.ApiServerInfo;
@@ -24,10 +26,12 @@ import com.z.gateway.service.lb.support.RandomLoadBalanceImpl;
  */
 public class DefaultApiInterfaceServiceImpl implements ApiServerInfoService {
 
+    private static final Logger logger=LoggerFactory.getLogger(DefaultApiInterfaceServiceImpl.class);
 	
 	private List<RegistryReaderService> registryReaderServiceImpls;
     @Override
     public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
+        logger.info("req={}",req);
     	if(CollectionUtils.isEmpty(registryReaderServiceImpls)) {
     		return null;
     	}
@@ -41,14 +45,15 @@ public class DefaultApiInterfaceServiceImpl implements ApiServerInfoService {
     	}
     	
     	 if (!CollectionUtils.isEmpty(serviceInfos)) {
-    		 List<String> sets=serviceInfos.stream().map(a->a.toString()).collect(Collectors.toList());
+    		// List<String> sets=serviceInfos.stream().map(a->a.toString()).collect(Collectors.toList());
     		 
-             String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);
-             ApiServerInfo apiInterface = new ApiServerInfo();
-             apiInterface.setApiId(req.getApiId());
-             apiInterface.setProtocol(CommonCodeConstants.HTTP);
-             apiInterface.setHostAddress(hostAddress);
-             return apiInterface;
+    	     ApiServerInfo hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), serviceInfos);
+//             ApiServerInfo apiInterface = new ApiServerInfo();
+//             apiInterface.setApiId(req.getApiId());
+//             apiInterface.setProtocol(CommonCodeConstants.HTTP);
+//             apiInterface.setHostAddress(hostAddress);
+//             return apiInterface;
+    	     return hostAddress;
          }
     	
     	

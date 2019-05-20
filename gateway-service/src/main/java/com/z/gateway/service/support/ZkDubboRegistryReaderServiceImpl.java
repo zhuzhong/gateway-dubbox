@@ -17,34 +17,47 @@ import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.service.ApiServerInfoReq;
 import com.z.gateway.service.RegistryReaderService;
 
-/**zk dubbo rest服务注册器内容读取器服务实现类
+/**
+ * zk dubbo rest服务注册器内容读取器服务实现类
+ * 
  * @author Administrator
  *
  */
 public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
 
-	
     @Override
     public List<ApiServerInfo> queryApiInterfaceByApiId(ApiServerInfoReq req) {
-    	logger.info("现在从zk中获取相应的后端服务器,req={}",req);
+        logger.info("现在从zk中获取相应的后端服务器,req={}", req);
         List<String> sets = hosts.get(req.getApiId());
-//        if (sets != null) {
-//            String hostAddress = loadBalancerService.chooseOne(new LbKey(req.getApiId(),req.getApiId()), sets);
-//            ApiServerInfo apiInterface = new ApiServerInfo();
-//            apiInterface.setApiId(req.getApiId());
-//            apiInterface.setProtocol(CommonCodeConstants.HTTP);
-//            apiInterface.setHostAddress(hostAddress);
-//            return apiInterface;
-//        }
-        
-        if(sets!=null) {
-        	return sets.stream().map(a->{
-        		ApiServerInfo apiInterface = new ApiServerInfo();
-              apiInterface.setApiId(req.getApiId());
-             apiInterface.setProtocol(CommonCodeConstants.HTTP);
-              apiInterface.setHostAddress(a);
-             return apiInterface;
-        	}).collect(Collectors.toList());
+        // if (sets != null) {
+        // String hostAddress = loadBalancerService.chooseOne(new
+        // LbKey(req.getApiId(),req.getApiId()), sets);
+        // ApiServerInfo apiInterface = new ApiServerInfo();
+        // apiInterface.setApiId(req.getApiId());
+        // apiInterface.setProtocol(CommonCodeConstants.HTTP);
+        // apiInterface.setHostAddress(hostAddress);
+        // return apiInterface;
+        // }
+
+        if (sets != null) {
+           /* return sets.stream().map(a -> {
+                ApiServerInfo apiInterface = new ApiServerInfo();
+                apiInterface.setApiId(req.getApiId());
+                apiInterface.setProtocol(CommonCodeConstants.HTTP);
+                apiInterface.setHostAddress(a);
+                return apiInterface;
+            }).collect(Collectors.toList());
+            */
+            
+            List<ApiServerInfo> l=sets.stream().map(a->{
+                ApiServerInfo c= new ApiServerInfo();
+                c.setApiId(req.getApiId());
+                
+                c.setProtocol(CommonCodeConstants.HTTP);
+                c.setHostAddress(a);
+                return c;
+            }).collect(Collectors.toList());
+            return l;
         }
         return null;
     }
@@ -65,7 +78,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
     private String zkServers;
     private ZkClient zkClient;
 
-   // private LoadBalanceService loadBalancerService;
+    // private LoadBalanceService loadBalancerService;
 
     public void init() {
         zkClient = new ZkClient(zkServers, 5000);
@@ -73,14 +86,9 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
             rootPath = SLASH + rootPath;
         }
 
-//        if (loadBalancerService == null) {
-//            loadBalancerService = new RandomLoadBalanceImpl();
-//        }
-        logger.info("rootPath={},init hosts",rootPath);
+        logger.info("rootPath={},init hosts", rootPath);
         runaway(zkClient, rootPath);
     }
-
-   
 
     public void setRootPath(String rootPath) {
         this.rootPath = rootPath;
@@ -90,7 +98,11 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
         this.zkServers = zkServers;
     }
 
-    private static final ConcurrentHashMap<String/*context_path*/, List<String/*host:port*/>> hosts = new ConcurrentHashMap<String, List<String>>();
+    private static final ConcurrentHashMap<String/* context_path */, List<String/*
+                                                                                 * host
+                                                                                 * :
+                                                                                 * port
+                                                                                 */>> hosts = new ConcurrentHashMap<String, List<String>>();
 
     private void runaway(final ZkClient zkClient, final String path) {
         zkClient.unsubscribeAll();
@@ -154,25 +166,13 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
                             });
 
                             List<String> thirdGeneration = zkClient.getChildren(secondNextPath);// 4级子节点
-                                                    // /dubbo-online/com.z.test.Testapi/providers/rest://localhost:8080/context
+                            // /dubbo-online/com.z.test.Testapi/providers/rest://localhost:8080/context
                             if (thirdGeneration != null && thirdGeneration.size() > 0) {
                                 for (String thirdChild : thirdGeneration) {
                                     if (thirdChild.startsWith(REST)) {
-                                    	
-                                    	zkClient.subscribeChildChanges(thirdChild, new IZkChildListener() {
-											
-											@Override
-											public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-												 logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
-				                                    // 4级节点的子节点发生
-				                                 runaway(zkClient, path); // 重新再来
-											}
-										});
                                         /*
-                                         * 样例
-                                         * rest://10.148.16.27:8480/demo/
-                                         * com.z.m.facade.api.
-                                         * DemoFacadeService
+                                         * 样例 rest://10.148.16.27:8480/demo/
+                                         * com.z.m.facade.api. DemoFacadeService
                                          */
                                         ServiceProvider sp = new ServiceProvider(thirdChild);
                                         String contextPath = sp.getContextPath();
@@ -199,7 +199,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
         }
     }
 
-     static class ServiceProvider {
+    static class ServiceProvider {
 
         private String host;
         private String contextPath;

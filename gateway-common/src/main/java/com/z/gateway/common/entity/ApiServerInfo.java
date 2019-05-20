@@ -110,7 +110,7 @@ public class ApiServerInfo implements Serializable {
 
 	@Override
 	public String toString() {
-		return url;
+		return getUrl();
 	}
 
     

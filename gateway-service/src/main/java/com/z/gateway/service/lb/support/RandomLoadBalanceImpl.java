@@ -3,6 +3,7 @@ package com.z.gateway.service.lb.support;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.service.lb.LbKey;
 import com.z.gateway.service.lb.LoadBalanceService;
 
@@ -13,7 +14,7 @@ import com.z.gateway.service.lb.LoadBalanceService;
 public class RandomLoadBalanceImpl implements LoadBalanceService {
 
     @Override
-    public String chooseOne(LbKey key,List<String> set) {
+    public ApiServerInfo chooseOne(LbKey key,List<ApiServerInfo> set) {
 
         return getRandomElement(set);
     }
@@ -27,11 +28,11 @@ public class RandomLoadBalanceImpl implements LoadBalanceService {
         return getRandom().nextInt(max);
     }
 
-    private String getRandomElement(List<String> set) {
+    private ApiServerInfo getRandomElement(List<ApiServerInfo> set) {
         int rn = getRandomInt(set.size());
         int i = 0;
-        String r = null;
-        for (String e : set) {
+        ApiServerInfo r = null;
+        for (ApiServerInfo e : set) {
             if (i == rn) {
                 r = e;
                 break;
@@ -39,7 +40,7 @@ public class RandomLoadBalanceImpl implements LoadBalanceService {
             i++;
         }
         if (r == null) { //如果为空，取第一个
-            for (String e : set) {
+            for (ApiServerInfo e : set) {
                 r = e;
                 break;
             }

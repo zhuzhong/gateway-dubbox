@@ -5,6 +5,8 @@ package com.z.gateway.service.lb;
 
 import java.util.List;
 
+import com.z.gateway.common.entity.ApiServerInfo;
+
 /**
  * @author Administrator
  *
@@ -12,5 +14,5 @@ import java.util.List;
 public interface LoadBalanceService {
 
     
-    String chooseOne(LbKey key,List<String> set);
+    ApiServerInfo chooseOne(LbKey key,List<ApiServerInfo> set);
 }

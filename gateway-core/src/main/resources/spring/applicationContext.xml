@@ -99,7 +99,7 @@
 
 
 	<bean id="apiInterfaceServiceImpl"
-		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl">
+		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl" init-method="init">
 		<property name="registryReaderServiceImpls">
 			<list>
 				<ref bean="zkRegistryReaderServiceImpl" />
