@@ -118,3 +118,23 @@ http://localhost:10000/restapi/test
 2. 获取图形验证码，即类似图形下载，文件下载之类的需求，将后台服务将其转换为相应的base64字符串，经网关返回给前端应用，前端应用自行将base64字符串进行解析，生成相应的文件或者图片等；
 3. 经过这种转换的目的是，因为base64文件格式较大，如果经过原来方式更改，则将会使所有的接口长度增大，不利于优化，再者restful  格式的java上传也是有问题的。
 
+## 重构及新增内容
+### 重命名ZkApiInterfaceServiceImpl->ZkDubboRegistryReaderServiceImpl
+
+### 增加MVC restful注册器模块
+	
+springmvc 对于构建restful服务越来越简单，使用者也很多。并且在组内遗留项目也出现了rest服务提供技术不单一。为了解决这一业务问题，所以增加类似springmvc 提供的rest服务注册器。它的使用方式，在springmvc实现的rest服务应用中，引入
+	
+		<dependency>
+			<groupId>com.z.gateway</groupId>
+			<artifactId>mvcrest-register</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+	在spring中以bean的形式注入ZkMvcRestRegistryServiceImpl
+	
+### 增加ZkMvcRestryReaderSeviceImpl（mvc rest服务注册器的注册服务的订阅者）
+在本应用内直接配置使用，配置类似ZkDubboRegistryReaderServiceImpl
+
+### ApiServerInfoService的实现类DefaultApiInterfaceServiceImpl
+	
