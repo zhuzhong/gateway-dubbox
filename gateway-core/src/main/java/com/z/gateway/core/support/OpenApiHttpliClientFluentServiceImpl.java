@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.z.gateway.core.OpenApiHttpClientService;
 
-/**
+/**这个类暂时不要用，不太稳定
  * @author sunff
  *
  */
@@ -92,11 +92,14 @@ public class OpenApiHttpliClientFluentServiceImpl extends AbstractOpenApiHttpCli
 
 		try {
 			Request r=Request.Get(webUrl);
-			if(usingHead) {
-				for(Map.Entry<String, String> kv:requestHeader.entrySet()) {
-						r.addHeader(kv.getKey(), kv.getValue());
-				}
-			}
+			 if (requestHeader != null && usingHead) {
+	                for(Map.Entry<String, String> kv:requestHeader.entrySet()) {
+	                    if (kv.getKey().equalsIgnoreCase("Content-Length")) {
+	                        continue;
+	                    }
+	                        r.addHeader(kv.getKey(), kv.getValue());
+	                }
+	            }
 			return executor.execute(r.useExpectContinue()
 					).returnContent().asString();
 		} catch (IOException e) {
@@ -110,8 +113,15 @@ public class OpenApiHttpliClientFluentServiceImpl extends AbstractOpenApiHttpCli
 
 		try {
 			Request r=Request.Post(url);
-			if(usingHead) {
+			
+			// 将所有的header都传过去
+	       
+	        
+	        if (requestHeader != null && usingHead) {
 				for(Map.Entry<String, String> kv:requestHeader.entrySet()) {
+				    if (kv.getKey().equalsIgnoreCase("Content-Length")) {
+                        continue;
+                    }
 						r.addHeader(kv.getKey(), kv.getValue());
 				}
 			}
