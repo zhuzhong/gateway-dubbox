@@ -31,7 +31,7 @@ public class OpenApiResponseUtils {
 		try {
 
 			PrintWriter writer = response.getWriter();
-			logger.info("write content to response...");
+			logger.debug("write content to response...");
 			writer.print(requestBean.getReturnContent());
 			writer.flush();
 			writer.close();

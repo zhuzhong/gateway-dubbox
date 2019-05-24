@@ -12,6 +12,7 @@ import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.service.ApiServerInfoReq;
@@ -27,8 +28,9 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
 
     @Override
     public List<ApiServerInfo> queryApiInterfaceByApiId(ApiServerInfoReq req) {
-        logger.info("现在从zk中获取相应的后端服务器,req={}", req);
+     
         List<String> sets = hosts.get(req.getApiId());
+        logger.info("现在从zk中获取相应的后端服务器,req={},sets={}", req,JSON.toJSON(sets));
         // if (sets != null) {
         // String hostAddress = loadBalancerService.chooseOne(new
         // LbKey(req.getApiId(),req.getApiId()), sets);
@@ -55,6 +57,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
                 
                 c.setProtocol(CommonCodeConstants.HTTP);
                 c.setHostAddress(a);
+                logger.info("从zk中获取的服务器={}",c);
                 return c;
             }).collect(Collectors.toList());
             return l;
@@ -114,7 +117,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
                  * System.out.println(parentPath +
                  * " 's child changed, currentChilds:" + currentChilds);
                  */
-                logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+                logger.debug("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
                 // 一级节点的子节点发生变化
                 runaway(zkClient, path); // 重新再来
 
@@ -134,7 +137,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
                          * System.out.println(parentPath +
                          * " 's child changed, currentChilds:" + currentChilds);
                          */
-                        logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+                        logger.debug("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
                         // 2级节点的子节点发生
                         runaway(zkClient, path); // 重新再来
 
@@ -157,7 +160,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
                                      * " 's child changed, currentChilds:" +
                                      * currentChilds);
                                      */
-                                    logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+                                    logger.debug("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
                                     // 3级节点的子节点发生
                                     runaway(zkClient, path); // 重新再来
 

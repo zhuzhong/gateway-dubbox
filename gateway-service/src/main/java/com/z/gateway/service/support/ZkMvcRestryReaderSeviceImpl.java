@@ -13,6 +13,7 @@ import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.service.ApiServerInfoReq;
@@ -30,9 +31,9 @@ public class ZkMvcRestryReaderSeviceImpl implements RegistryReaderService {
 	@Override
 	public List<ApiServerInfo> queryApiInterfaceByApiId(ApiServerInfoReq req) {
 
-		logger.info("现在从zk中获取相应的mvcrestful后端服务器,req={}", req);
+		
 		List<String> sets = hosts.get(req.getApiId());
-
+		logger.info("现在从zk中获取相应的mvcrestful后端服务器,req={},sets={}", req,JSON.toJSON(sets));
 		if (sets != null) {
 			return sets.stream().map(a -> {
 				ApiServerInfo apiInterface = new ApiServerInfo();

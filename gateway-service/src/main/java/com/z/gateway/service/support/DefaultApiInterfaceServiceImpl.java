@@ -31,7 +31,7 @@ public class DefaultApiInterfaceServiceImpl implements ApiServerInfoService {
 	private List<RegistryReaderService> registryReaderServiceImpls;
     @Override
     public ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req) {
-        logger.info("req={}",req);
+        logger.debug("req={}",req);
     	if(CollectionUtils.isEmpty(registryReaderServiceImpls)) {
     		return null;
     	}

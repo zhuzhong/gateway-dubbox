@@ -79,10 +79,10 @@ public class AsynOpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, Appli
                     }
                     // 写入响应
                     OpenApiResponseUtils.writeRsp((HttpServletResponse) context.getResponse(), sessionBean.getRequest());
-                    logger.info("write content end...");
+                    logger.debug("write content end...");
                 } finally {
                     context.complete();
-                    logger.info("request complete...");
+                    logger.debug("request complete...");
                 }
 
             }

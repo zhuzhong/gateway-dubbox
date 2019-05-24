@@ -186,15 +186,10 @@ public class OpenApiHttpClientServiceImpl extends AbstractOpenApiHttpClientServi
 		try {
 			// 执行请求操作，并拿到结果（同步阻塞）
 			CloseableHttpResponse response = getHttpClient().execute(httpPost);
-			try {
-				logger.info("response响应=" + JSON.toJSONString(response));
-			} catch (Exception e) {
-				logger.info("log response");
-				e.printStackTrace();
-			}
-
+			logger.debug("response响应{}" , JSON.toJSONString(response));
+		
 			int statusCode = response.getStatusLine().getStatusCode();
-			logger.info("statusCode=" + statusCode);
+			logger.debug("statusCode{}" , statusCode);
 			if (statusCode == HttpStatus.SC_OK) {
 				// 获取结果实体
 				HttpEntity entity = response.getEntity();
