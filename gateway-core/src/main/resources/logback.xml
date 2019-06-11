@@ -59,10 +59,10 @@
 	<logger name="java.sql.Statement" level="INFO" />
 	<logger name="java.sql.PreparedStatement" level="INFO" />
 	<logger name="org.springframework" level="INFO" />
-   <logger name="com.z.gateway" level="INFO" />
+   <logger name="com.z.gateway" level="debug" />
    
 	<root>
-		<level value="INFO" />
+		<level value="debug" />
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>
