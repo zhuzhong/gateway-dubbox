@@ -12,7 +12,7 @@ public class GateWayWebServer {
     // LoggerFactory.getLogger(GateWayWebServer.class);
 
     public static void main(String[] args) {
-        Integer port = 8080;
+        Integer port = 8480;
         String contextPath = "/gw";
         if (args.length == 2) {
             port = Integer.valueOf(args[0]);
@@ -21,7 +21,7 @@ public class GateWayWebServer {
                 contextPath = "/" + contextPath;
             }
         } else {
-            System.out.println("GateWayWebServer参数不是两个，所以使用默认值,port=8080,contextpath=gw");
+            System.out.println("GateWayWebServer参数不是两个，所以使用默认值,port=8480,contextpath=gw");
         }
 
         new GateWayWebServer(port, contextPath).start();

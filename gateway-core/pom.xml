@@ -8,7 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>gateway-core</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>gateway-core</name>
 	<url>http://maven.apache.org</url>
 
@@ -26,7 +26,7 @@
 		</dependency>
 
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 			<version>${spring.security.version}</version>
@@ -35,7 +35,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>${spring.security.version}</version>
-		</dependency>
+		</dependency> -->
 
 
 		<dependency>
@@ -70,7 +70,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 
@@ -160,6 +160,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 
