@@ -28,9 +28,9 @@
 		<property name="taskExecutor" ref="taskExecutor" />
 	</bean>-->
 <!-- netty server 不支持servlet3的异步功能，所以不能使用上面的handler -->
-	 <bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
+	 <bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl2"> 
 		<property name="idService" ref="idService" /> 
-		<property name="poolHandler" ref="poolHandler" /> </bean> 
+	</bean> 
 	<bean id="poolHandler"
 		class="com.z.gateway.handler.support.ThreadPoolHandlerImpl">
 		<property name="taskExecutor" ref="taskExecutor" />
