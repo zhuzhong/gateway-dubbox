@@ -26,12 +26,13 @@ public class OpenApiResponseUtils {
 	// HashMap<String, HttpServletResponse>();
 
 	public static void writeRsp(HttpServletResponse response, OpenApiHttpRequestBean requestBean) {
-		setResponseHeader(response, requestBean.getReqHeader());
+		
 
 		try {
-
+		    setResponseHeader(response, requestBean.getReqHeader());
 			PrintWriter writer = response.getWriter();
 			logger.debug("write content to response...");
+			
 			writer.print(requestBean.getReturnContent());
 			writer.flush();
 			writer.close();
@@ -69,7 +70,7 @@ public class OpenApiResponseUtils {
 			 */
 			response.addHeader(entry.getKey(), entry.getValue()); // 这里根据情况，把header返回用户
 		}
-		response.setHeader(HEADER_SERVER_KEY, null);
+		//response.setHeader(HEADER_SERVER_KEY, "localhost");
 
 	}
 }

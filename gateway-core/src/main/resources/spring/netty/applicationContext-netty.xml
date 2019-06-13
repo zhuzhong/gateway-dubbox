@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<description>Spring_Configuration</description>
+
+
+	<context:property-placeholder
+		location="classpath*:config/thread_poll.properties" />
+
+	<!-- <context:component-scan base-package="com.z.gateway"> <context:exclude-filter 
+		type="annotation" expression="org.springframework.stereotype.Controller" 
+		/> </context:component-scan> -->
+
+	<!-- 异步处理servlet3 
+	<bean id="openApiAcceptHandlerImpl"
+		class="com.z.gateway.handler.support.AsynOpenApiAcceptHandlerImpl">
+		<property name="idService" ref="idService" />
+		<property name="taskExecutor" ref="taskExecutor" />
+	</bean>-->
+<!-- netty server 不支持servlet3的异步功能，所以不能使用上面的handler -->
+	 <bean id="openApiAcceptHandlerImpl" class="com.z.gateway.handler.support.OpenApiAcceptHandlerImpl"> 
+		<property name="idService" ref="idService" /> 
+		<property name="poolHandler" ref="poolHandler" /> </bean> 
+	<bean id="poolHandler"
+		class="com.z.gateway.handler.support.ThreadPoolHandlerImpl">
+		<property name="taskExecutor" ref="taskExecutor" />
+	</bean>
+	<!-- 配置线程池 -->
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<!-- 线程池维护线程的最少数量 -->
+		<property name="corePoolSize" value="5" />
+		<!-- 线程池维护线程所允许的空闲时间 -->
+		<property name="keepAliveSeconds" value="30000" />
+		<!-- 线程池维护线程的最大数量 -->
+		<property name="maxPoolSize" value="20" />
+		<!-- 线程池所使用的缓冲队列 -->
+		<property name="queueCapacity" value="1000" />
+	</bean>
+
+
+	<!-- bean id 取自CommonCodeConstants类 -->
+	<!-- api服务调用 -->
+	<bean name="openapi.service.HandlerExecuteTemplate"
+		class="com.z.gateway.handler.support.OpenApiServiceHandlerExecuteTemplateImpl">
+		<constructor-arg>
+			<list>
+				<ref bean="serviceReqAdapter" />
+				<ref bean="serviceReqHandler" />
+				<ref bean="serviceRspHandler" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="serviceReqAdapter"
+		class="com.z.gateway.core.support.OpenApiReqAdapter">
+		<property name="contextPath" value="${proj.contextPath}" />
+	</bean>
+
+	<bean id="serviceReqHandler"
+		class="com.z.gateway.core.support.OpenApiReqHandler">
+		<property name="apiInterfaceService"
+			ref="apiInterfaceServiceImpl" />
+		<property name="apiHttpClientService"
+			ref="apiHttpClientService" />
+		<property name="useHystrix" value="${useHystrix}" />
+	</bean>
+
+
+
+	<bean id="serviceRspHandler"
+		class="com.z.gateway.core.support.OpenApiRspHandler">
+	</bean>
+
+	<bean id="apiHttpClientService"
+		class="com.z.gateway.core.support.OpenApiHttpClientServiceImpl"
+		init-method="init">
+		<property name="usingHead" value="${usingHead}"></property>
+	</bean>
+
+
+	<!-- 不依赖于外部系统即api的服务提供由硬编码完成 -->
+	<bean id="idService"
+		class="com.z.gateway.service.support.DefaultIdServiceImpl" />
+	<bean id="authenticationService"
+		class="com.z.gateway.service.support.DefaultAuthenticationServiceImpl" />
+
+
+	<bean id="apiInterfaceServiceImpl"
+		class="com.z.gateway.service.support.DefaultApiInterfaceServiceImpl" init-method="init">
+		<property name="registryReaderServiceImpls">
+			<list>
+				<ref bean="zkRegistryReaderServiceImpl" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="zkRegistryReaderServiceImpl"
+		class="com.z.gateway.service.support.ZkDubboRegistryReaderServiceImpl"
+		init-method="init">
+		<property name="rootPath" value="${zk.rootpath}" />
+		<property name="zkServers" value="${zk.zkservers}" />
+	</bean>
+
+
+</beans>

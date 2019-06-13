@@ -30,7 +30,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
     public List<ApiServerInfo> queryApiInterfaceByApiId(ApiServerInfoReq req) {
      
         List<String> sets = hosts.get(req.getApiId());
-        logger.info("现在从zk中获取相应的后端服务器,req={},sets={}", req,JSON.toJSON(sets));
+        logger.debug("现在从zk中获取相应的后端服务器,req={},sets={}", req,JSON.toJSON(sets));
         // if (sets != null) {
         // String hostAddress = loadBalancerService.chooseOne(new
         // LbKey(req.getApiId(),req.getApiId()), sets);
@@ -57,7 +57,7 @@ public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
                 
                 c.setProtocol(CommonCodeConstants.HTTP);
                 c.setHostAddress(a);
-                logger.info("从zk中获取的服务器={}",c);
+                logger.debug("从zk中获取的服务器={}",c);
                 return c;
             }).collect(Collectors.toList());
             return l;

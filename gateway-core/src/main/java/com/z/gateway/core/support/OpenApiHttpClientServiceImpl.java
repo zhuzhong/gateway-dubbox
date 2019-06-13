@@ -214,6 +214,7 @@ public class OpenApiHttpClientServiceImpl extends AbstractOpenApiHttpClientServi
 			logger.error("url={}调用失败", e);
 			e.printStackTrace();
 		}
+		logger.debug("dopost方法返回内容={}",body);
 		return body;
 	}
 
@@ -294,7 +295,7 @@ public class OpenApiHttpClientServiceImpl extends AbstractOpenApiHttpClientServi
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		logger.debug("get方法返回内容={}",body);
 		return body;
 	}
 

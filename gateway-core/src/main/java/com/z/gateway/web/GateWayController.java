@@ -26,7 +26,7 @@ public class GateWayController {
    @Autowired
     private OpenApiAcceptHandler acceptHandler;
     //这个供外部使用
-    @RequestMapping(value = {"/**",""},method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value = {"/**",""},method = {RequestMethod.POST,RequestMethod.GET},produces="text/json;charset=utf-8")
     public void service(HttpServletRequest request, HttpServletResponse response) {
       // logger.info("receive request...");
        this.acceptHandler.acceptRequest(request, response);

@@ -62,8 +62,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         
         Map<String, String>  parammap = getRequestParams(ctx,fullHttpRequest);
         if(flag && ctx.channel().isActive()){
-            //HTTP请求、GET/POST
-            MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+           
             MockHttpServletRequest servletRequest =new MockHttpServletRequest(servletContext);
             // headers
             for (String name : fullHttpRequest.headers().names()) {
@@ -113,14 +112,23 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
             }
             //在这里增加filter
             GateWayRequestWrapper requestWrapper = new GateWayRequestWrapper((HttpServletRequest)servletRequest);
+            //HTTP请求、GET/POST
+            MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+            servletResponse.setCharacterEncoding(CharsetUtil.UTF_8.name());
             this.servlet.service(requestWrapper, servletResponse);
             
             //this.servlet.service(servletRequest,servletResponse);
 
             HttpResponseStatus status = HttpResponseStatus.valueOf(servletResponse.getStatus());
-            String result = servletResponse.getContentAsString();
+            
+            String result =new String(servletResponse.getContentAsByteArray(), CharsetUtil.UTF_8);
+                    
+                    // servletResponse.getContentAsString();
             result = StringUtils.isEmpty(result)?"":result;
-            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status,Unpooled.copiedBuffer(result,CharsetUtil.UTF_8));
+           // System.out.println("返回的内容="+result);
+            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status,//Unpooled.copiedBuffer(result,CharsetUtil.UTF_8)
+                    Unpooled.copiedBuffer(servletResponse.getContentAsByteArray())
+                    );
             response.headers().set("Content-Type", "text/json;charset=UTF-8");
             response.headers().set("Access-Control-Allow-Origin", "*");
             response.headers().set("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With,X-File-Name");

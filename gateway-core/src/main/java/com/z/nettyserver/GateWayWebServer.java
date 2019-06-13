@@ -1,34 +1,86 @@
 package com.z.nettyserver;
 
-import javax.servlet.ServletException;
-
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockServletConfig;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 public class GateWayWebServer {
 
-    //private static Logger logger = LoggerFactory.getLogger(GateWayWebServer.class);
+    // private static Logger logger =
+    // LoggerFactory.getLogger(GateWayWebServer.class);
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/spring/applicationContext.xml");
-        ctx.start();
         Integer port = 8080;
-        DispatcherServlet servlet = getDispatcherServlet(ctx);
-        NettyHttpServer server = new NettyHttpServer(port, servlet);
-        server.start();
-     
+        String contextPath = "/gw";
+        if (args.length == 2) {
+            port = Integer.valueOf(args[0]);
+            contextPath = args[1];
+            if (!contextPath.startsWith("/")) {
+                contextPath = "/" + contextPath;
+            }
+        } else {
+            System.out.println("GateWayWebServer参数不是两个，所以使用默认值,port=8080,contextpath=gw");
+        }
+
+        new GateWayWebServer(port, contextPath).start();
+    }
+
+    private final int port;
+    private final String contextPath;
+
+    public GateWayWebServer() {
+        this(8080, "/gw");
+    }
+
+    public GateWayWebServer(int port, String path) {
+        this.port = port;
+        this.contextPath = path;
 
     }
 
-    public static DispatcherServlet getDispatcherServlet(ApplicationContext ctx) {
+    public void start() {
+        try {
+            ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
+                    "classpath:/spring/netty/applicationContext-netty.xml");
+            ctx.start();
+
+            MockServletContext servletContext = new MockServletContext();
+            servletContext.setContextPath(contextPath);
+
+            XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
+            mvcContext.setServletContext(servletContext);
+
+            mvcContext.setConfigLocation("classpath*:spring/netty/spring-mvc-netty.xml");
+            mvcContext.setParent(ctx);
+
+            MockServletConfig servletConfig = new MockServletConfig(mvcContext.getServletContext(),
+                    "dispatcherServlet");
+            DispatcherServlet dispatcherServlet = new DispatcherServlet(mvcContext);
+
+            dispatcherServlet.init(servletConfig);
+
+            NettyHttpServer server = new NettyHttpServer(port, dispatcherServlet);
+            server.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("启动失败");
+        }
+        
+    }
+
+   /* private DispatcherServlet getDispatcherServlet(ApplicationContext ctx) {
+
+        MockServletContext servletContext = new MockServletContext();
+        servletContext.setContextPath(contextPath);
 
         XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
+        mvcContext.setServletContext(servletContext);
 
-        mvcContext.setConfigLocation("classpath*:spring/spring-mvc.xml");
+        mvcContext.setConfigLocation("classpath*:spring/netty/spring-mvc-netty.xml");
         mvcContext.setParent(ctx);
+
         MockServletConfig servletConfig = new MockServletConfig(mvcContext.getServletContext(), "dispatcherServlet");
         DispatcherServlet dispatcherServlet = new DispatcherServlet(mvcContext);
         try {
@@ -37,5 +89,5 @@ public class GateWayWebServer {
             e.printStackTrace();
         }
         return dispatcherServlet;
-    }
+    }*/
 }
