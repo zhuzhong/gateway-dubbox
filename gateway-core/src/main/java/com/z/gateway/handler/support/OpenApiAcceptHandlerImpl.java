@@ -6,8 +6,8 @@ package com.z.gateway.handler.support;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -30,7 +30,7 @@ import com.z.gateway.util.OpenApiResponseUtils;
 
 public class OpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, ApplicationContextAware {
 
-    private static Log logger = LogFactory.getLog(OpenApiAcceptHandlerImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(OpenApiAcceptHandlerImpl.class);
     private IdService idService;
 
     private ThreadPoolHandler poolHandler;
@@ -53,9 +53,8 @@ public class OpenApiAcceptHandlerImpl implements OpenApiAcceptHandler, Applicati
         String traceId = idService.genInnerRequestId();
         reqBean.setTraceId(traceId);
         request.setAttribute(CommonCodeConstants.REQ_BEAN_KEY, reqBean); // 重新设置bean
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("requestId=%s request begin,reqeust=%s", traceId, JSON.toJSONString(reqBean)));
-        }
+      
+        logger.info("requestId={} request begin,reqeust={}",traceId, JSON.toJSONString(reqBean));
         // 将当前请求放入线程池处理，若超过线程池最大处理数则抛出reach queue max deepth 异常
         addTask2Pool(response, new OpenApiHttpSessionBean(reqBean));
     }

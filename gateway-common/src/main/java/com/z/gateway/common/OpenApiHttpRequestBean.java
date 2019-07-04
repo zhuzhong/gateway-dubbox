@@ -4,11 +4,11 @@
 package com.z.gateway.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
 import com.z.gateway.common.util.CommonCodeConstants;
 
 /**
@@ -46,7 +46,7 @@ public class OpenApiHttpRequestBean implements Serializable {
 
     private String traceId; //
 
-    private String printStr; //
+   // private String printStr; //
     // private String serviceRsp; // ֵ
     // begin ---
     private String appId;
@@ -117,13 +117,13 @@ public class OpenApiHttpRequestBean implements Serializable {
         this.requestMethod = requestMethod;
     }
 
-    public String getPrintStr() {
+  /*  public String getPrintStr() {
         return printStr;
     }
 
     public void setPrintStr(String printStr) {
         this.printStr = printStr;
-    }
+    }*/
 
     public String getServiceReqData() {
         return serviceReqData;
@@ -307,9 +307,36 @@ public class OpenApiHttpRequestBean implements Serializable {
 		this.requestUrl = requestUrl;
 	}
 
-	@Override
+	
+
+
+
+    @Override
     public String toString() {
-        return JSON.toJSONString(this);
+        return "OpenApiHttpRequestBean [reqHeader=" + reqHeader + ", requestUrl=" + requestUrl + ", operationType="
+                + operationType + ", clientAddr=" + clientAddr + ", localAddr=" + localAddr + ", localPort=" + localPort
+                + ", thdApiUrlParams=" + thdApiUrlParams + ", serviceReqData=" + serviceReqData + ", requestMethod="
+                + requestMethod + ", serviceGetReqData=" + serviceGetReqData + ", queryString=" + queryString
+                + ", requestTime=" + requestTime + ", responseTime=" + responseTime + ", elapsedTime=" + elapsedTime
+                + ", traceId=" + traceId + ", appId=" + appId + ", appToken=" + appToken + ", apiId=" + apiId
+                + ", version=" + version + ", timeStamp=" + timeStamp + ", signMethod=" + signMethod + ", sign=" + sign
+                + ", deviceToken=" + deviceToken + ", userToken=" + userToken + ", format=" + format
+                + ", returnContent=" + returnContent + "]";
     }
 
+
+
+
+
+    private String returnContent; //返回内容
+
+    public String getReturnContent() {
+        return returnContent;
+    }
+
+    public void setReturnContent(String returnContent) {
+        this.returnContent = returnContent;
+    }
+
+    
 }

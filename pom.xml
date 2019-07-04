@@ -5,13 +5,15 @@
 	<artifactId>gateway-dubbox</artifactId>
 	<packaging>pom</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>gateway Maven Webapp</name>
+	<name>gateway-dubbox</name>
 	<url>http://maven.apache.org</url>
 
 	 <modules>
 		<module>gateway-common</module>
 		<module>gateway-service</module>
-		<module>gateway-core</module>
-		
+		<module>mvcrest-register</module>
+		<module>gateway-core</module>	
 	</modules>
+	
+	
 </project>

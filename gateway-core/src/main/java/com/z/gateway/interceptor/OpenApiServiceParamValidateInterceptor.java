@@ -13,8 +13,8 @@ import java.util.Map;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
 import com.z.gateway.common.util.CommonCodeConstants;
@@ -26,7 +26,7 @@ import com.z.gateway.common.util.NetworkUtil;
  */
 public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValidateInterceptor {
 
-    private static final Log log = LogFactory.getLog(OpenApiServiceParamValidateInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(OpenApiServiceParamValidateInterceptor.class);
 
     /**
      * 根据请求的协议进行解析
@@ -34,13 +34,13 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
     @Override
     protected OpenApiHttpRequestBean iniOpenApiHttpRequestBean(HttpServletRequest request) {
         String requestMethod = request.getMethod();
-
+        log.info("request url={}",request.getRequestURI());
         OpenApiHttpRequestBean bean = new OpenApiHttpRequestBean();
         if (requestMethod.equalsIgnoreCase(CommonCodeConstants.REQUEST_METHOD.POST.name())) {
             try {
                 parsePostMethod(request, bean);
             } catch (IOException e) {
-                log.error("这个请求格式不是application/json的,我处理不了...");
+                //log.error("这个请求格式不是application/json的,我处理不了...");
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
@@ -82,7 +82,7 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
     private void parsePostMethod(HttpServletRequest request, OpenApiHttpRequestBean bean) throws IOException {
 
     	
-    	String requestUrl=request.getRequestURI(); // /test/tapi
+    	String requestUrl=request.getRequestURI(); 
     	bean.setRequestUrl(requestUrl);
 
     	 
@@ -134,7 +134,7 @@ public class OpenApiServiceParamValidateInterceptor extends AbstractOpenApiValid
             String value = request.getHeader(key);
             map.put(key, value);
         }
-
+        
         return map;
     }
 

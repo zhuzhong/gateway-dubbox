@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Administrator
  *
  */
-public class ApiInterface implements Serializable {
+public class ApiServerInfo implements Serializable {
 
     /**
      * 
@@ -108,4 +108,10 @@ public class ApiInterface implements Serializable {
         this.version = version;
     }
 
+	@Override
+	public String toString() {
+		return getUrl();
+	}
+
+    
 }

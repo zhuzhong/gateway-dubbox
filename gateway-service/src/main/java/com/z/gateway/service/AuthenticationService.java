@@ -3,7 +3,7 @@
  */
 package com.z.gateway.service;
 
-import com.z.gateway.common.OpenApiHttpRequestBean;
+import com.z.gateway.common.OpenApiRouteBean;
 
 /**认证服务类
  * @author Administrator
@@ -11,5 +11,5 @@ import com.z.gateway.common.OpenApiHttpRequestBean;
  */
 public interface AuthenticationService {
 
-    public void doAuthOpenApiHttpRequestBean(OpenApiHttpRequestBean requestBean);
+    public void doAuthOpenApiHttpRequestBean(OpenApiRouteBean requestBean);
 }

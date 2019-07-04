@@ -12,7 +12,7 @@ import com.z.gateway.service.CacheService;
  * @author Administrator
  *
  */
-
+@Deprecated
 public class DefaultCacheServiceImpl implements CacheService {
 
     private Map<String, Object> m = new HashMap<String, Object>();

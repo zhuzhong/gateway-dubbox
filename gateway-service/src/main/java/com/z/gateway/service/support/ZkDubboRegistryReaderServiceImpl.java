@@ -5,39 +5,68 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.z.gateway.common.entity.ApiInterface;
+import com.alibaba.fastjson.JSON;
+import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
-import com.z.gateway.service.ApiInterfaceService;
-import com.z.gateway.service.LoadBalanceService;
+import com.z.gateway.service.ApiServerInfoReq;
+import com.z.gateway.service.RegistryReaderService;
 
 /**
+ * zk dubbo rest服务注册器内容读取器服务实现类
+ * 
  * @author Administrator
  *
  */
-public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
+public class ZkDubboRegistryReaderServiceImpl implements RegistryReaderService {
 
     @Override
-    public ApiInterface queryApiInterfaceByApiId(String apiId, String version) {
-        List<String> sets = hosts.get(apiId);
+    public List<ApiServerInfo> queryApiInterfaceByApiId(ApiServerInfoReq req) {
+     
+        List<String> sets = hosts.get(req.getApiId());
+        logger.info("现在从zk中获取相应的后端服务器,req={},sets={}", req,JSON.toJSON(sets));
+        // if (sets != null) {
+        // String hostAddress = loadBalancerService.chooseOne(new
+        // LbKey(req.getApiId(),req.getApiId()), sets);
+        // ApiServerInfo apiInterface = new ApiServerInfo();
+        // apiInterface.setApiId(req.getApiId());
+        // apiInterface.setProtocol(CommonCodeConstants.HTTP);
+        // apiInterface.setHostAddress(hostAddress);
+        // return apiInterface;
+        // }
+
         if (sets != null) {
-            String hostAddress = loadBalancerService.chooseOne(apiId, version, sets);
-            ApiInterface apiInterface = new ApiInterface();
-            apiInterface.setApiId(apiId);
-            apiInterface.setProtocol(CommonCodeConstants.HTTP);
-            apiInterface.setHostAddress(hostAddress);
-            return apiInterface;
+           /* return sets.stream().map(a -> {
+                ApiServerInfo apiInterface = new ApiServerInfo();
+                apiInterface.setApiId(req.getApiId());
+                apiInterface.setProtocol(CommonCodeConstants.HTTP);
+                apiInterface.setHostAddress(a);
+                return apiInterface;
+            }).collect(Collectors.toList());
+            */
+            
+            List<ApiServerInfo> l=sets.stream().map(a->{
+                ApiServerInfo c= new ApiServerInfo();
+                c.setApiId(req.getApiId());
+                
+                c.setProtocol(CommonCodeConstants.HTTP);
+                c.setHostAddress(a);
+                logger.info("从zk中获取的服务器={}",c);
+                return c;
+            }).collect(Collectors.toList());
+            return l;
         }
         return null;
     }
 
     // --------准备数据部分----------------------------------------------------
-    private static Logger logger = LoggerFactory.getLogger(ZkApiInterfaceServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(ZkDubboRegistryReaderServiceImpl.class);
 
     private static final String REST = "rest";
 
@@ -52,7 +81,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
     private String zkServers;
     private ZkClient zkClient;
 
-    private LoadBalanceService loadBalancerService;
+    // private LoadBalanceService loadBalancerService;
 
     public void init() {
         zkClient = new ZkClient(zkServers, 5000);
@@ -60,14 +89,8 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
             rootPath = SLASH + rootPath;
         }
 
-        if (loadBalancerService == null) {
-            loadBalancerService = new RandomLoadBalanceImpl();
-        }
+        logger.info("rootPath={},init hosts", rootPath);
         runaway(zkClient, rootPath);
-    }
-
-    public void setLoadBalancerService(LoadBalanceService loadBalancerService) {
-        this.loadBalancerService = loadBalancerService;
     }
 
     public void setRootPath(String rootPath) {
@@ -78,7 +101,11 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
         this.zkServers = zkServers;
     }
 
-    private static final ConcurrentHashMap<String, List<String>> hosts = new ConcurrentHashMap<String, List<String>>();
+    private static final ConcurrentHashMap<String/* context_path */, List<String/*
+                                                                                 * host
+                                                                                 * :
+                                                                                 * port
+                                                                                 */>> hosts = new ConcurrentHashMap<String, List<String>>();
 
     private void runaway(final ZkClient zkClient, final String path) {
         zkClient.unsubscribeAll();
@@ -90,7 +117,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                  * System.out.println(parentPath +
                  * " 's child changed, currentChilds:" + currentChilds);
                  */
-                logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+                logger.debug("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
                 // 一级节点的子节点发生变化
                 runaway(zkClient, path); // 重新再来
 
@@ -110,7 +137,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                          * System.out.println(parentPath +
                          * " 's child changed, currentChilds:" + currentChilds);
                          */
-                        logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+                        logger.debug("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
                         // 2级节点的子节点发生
                         runaway(zkClient, path); // 重新再来
 
@@ -133,7 +160,7 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                                      * " 's child changed, currentChilds:" +
                                      * currentChilds);
                                      */
-                                    logger.info("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
+                                    logger.debug("{}'s child changed, currentChilds:{}", parentPath, currentChilds);
                                     // 3级节点的子节点发生
                                     runaway(zkClient, path); // 重新再来
 
@@ -142,15 +169,13 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
                             });
 
                             List<String> thirdGeneration = zkClient.getChildren(secondNextPath);// 4级子节点
-                                                                                                // /dubbo-online/com.z.test.Testapi/rest://localhost:8080
+                            // /dubbo-online/com.z.test.Testapi/providers/rest://localhost:8080/context
                             if (thirdGeneration != null && thirdGeneration.size() > 0) {
                                 for (String thirdChild : thirdGeneration) {
                                     if (thirdChild.startsWith(REST)) {
                                         /*
-                                         * 样例
-                                         * rest://10.148.16.27:8480/demo/
-                                         * com.z.m.facade.api.
-                                         * DemoFacadeService
+                                         * 样例 rest://10.148.16.27:8480/demo/
+                                         * com.z.m.facade.api. DemoFacadeService
                                          */
                                         ServiceProvider sp = new ServiceProvider(thirdChild);
                                         String contextPath = sp.getContextPath();
@@ -171,13 +196,13 @@ public class ZkApiInterfaceServiceImpl implements ApiInterfaceService {
 
         }
 
-        synchronized (this) {
+        synchronized (PROVIDERS) {
             hosts.clear();
             hosts.putAll(newHosts);
         }
     }
 
-    private static class ServiceProvider {
+    static class ServiceProvider {
 
         private String host;
         private String contextPath;

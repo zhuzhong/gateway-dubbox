@@ -4,40 +4,40 @@ import org.apache.commons.chain.Context;
 import org.apache.commons.lang3.StringUtils;
 
 import com.z.gateway.common.OpenApiHttpRequestBean;
-import com.z.gateway.common.entity.ApiInterface;
-import com.z.gateway.common.exception.OauthErrorEnum;
-import com.z.gateway.common.exception.OpenApiException;
+import com.z.gateway.common.OpenApiRouteBean;
+import com.z.gateway.common.entity.ApiServerInfo;
 import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.core.AbstractOpenApiHandler;
 import com.z.gateway.core.OpenApiHttpClientService;
-import com.z.gateway.core.OpenApiRouteBean;
 import com.z.gateway.protocol.OpenApiContext;
 import com.z.gateway.protocol.OpenApiHttpSessionBean;
-import com.z.gateway.service.ApiInterfaceService;
-import com.z.gateway.service.CacheService;
+import com.z.gateway.service.ApiServerInfoReq;
+import com.z.gateway.service.ApiServerInfoService;
+//import com.z.gateway.util.StringResponseUtil;
 import com.z.gateway.util.UrlUtil;
 
 public class OpenApiReqHandler extends AbstractOpenApiHandler {
 
     private final int maxReqDataLth = 500;
 
-
-    private ApiInterfaceService apiInterfaceService;
+    private ApiServerInfoService apiInterfaceService;
 
     private OpenApiHttpClientService apiHttpClientService;
-    public void setApiInterfaceService(ApiInterfaceService apiInterfaceService) {
+
+    private boolean useHystrix;
+
+    public void setApiInterfaceService(ApiServerInfoService apiInterfaceService) {
         this.apiInterfaceService = apiInterfaceService;
     }
 
     public void setApiHttpClientService(OpenApiHttpClientService apiHttpClientService) {
         this.apiHttpClientService = apiHttpClientService;
     }
-    private  CacheService cacheService;
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
+  
+    public void setUseHystrix(boolean useHystrix) {
+        this.useHystrix = useHystrix;
     }
-    
+
     // step2
     @Override
     public boolean doExcuteBiz(Context context) {
@@ -50,16 +50,27 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                     httpSessionBean));
         }
         String routeBeanKey = request.getRouteBeanKey();
-        OpenApiRouteBean routeBean = (OpenApiRouteBean) cacheService.get(routeBeanKey);
+        OpenApiRouteBean routeBean = (OpenApiRouteBean) openApiContext.get(routeBeanKey);
 
-        routeBean.setServiceRsp(doInvokeBackService(routeBean)); // 返回值
+        // routeBean.setServiceRsp(doInvokeBackService(routeBean)); // 返回值
+        if (useHystrix) {
+            HystrixServiceCommand command = new HystrixServiceCommand(apiHttpClientService, apiInterfaceService,
+                    routeBean);
+            String result = command.execute();
+            routeBean.setReturnContent(result);
+        } else {
+            routeBean.setReturnContent(doInvokeBackService(routeBean));
+        }
         if (logger.isDebugEnabled()) {
-            logger.info(String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
-                    System.currentTimeMillis(), (System.currentTimeMillis() - currentTime) , httpSessionBean));
+            logger.info(
+                    String.format("end run doExecuteBiz,currentTime=%d,elapase_time=%d milseconds,httpSessonBean=%s",
+                            System.currentTimeMillis(), (System.currentTimeMillis() - currentTime), httpSessionBean));
         }
         return false;
     }
 
+    
+  
     /**
      * 根据routeBean信息，通过httpclient调用后端信息，然后将返回值构建成string
      * 
@@ -73,15 +84,20 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
         String requestMethod = bean.getRequestMethod();
 
         if (operationType.equals(CommonCodeConstants.API_SYSERVICE_KEY)) {
-            
+
         } else if (CommonCodeConstants.API_GETDATA_KEY.equals(operationType)) {
-            
+
         } else if (CommonCodeConstants.API_SERVICE_KEY.equals(operationType)) {
             logger.info(String.format("{serviceId:%s ,version:%s }", bean.getApiId(), bean.getVersion()));
-            ApiInterface apiInfo = apiInterfaceService.queryApiInterfaceByApiId(bean.getApiId(), bean.getVersion());
-            
+            ApiServerInfo apiInfo = apiInterfaceService
+                    .queryApiInterfaceByApiId(new ApiServerInfoReq(bean.getApiId(), bean.getVersion()));
+
             if (apiInfo == null) {
-                return String.format("this apiId=%s,version=%s has off line,please use another one", bean.getApiId(), bean.getVersion());
+//                return StringResponseUtil
+//                        .encodeResp(String.format("this apiId=%s,version=%s has off line,please use another one",
+//                                bean.getApiId(), bean.getVersion()).getBytes());
+                return String.format("this apiId=%s,version=%s has off line,please use another one",
+                        bean.getApiId(), bean.getVersion());
             }
             apiInfo.setTargetUrl(bean.getTargetUrl());
             apiInfo.setRequestMethod(bean.getRequestMethod());
@@ -97,15 +113,15 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
                     if (bean.getServiceGetReqData() == null) {
-                        serviceRspData = apiHttpClientService.doHttpsGet(url,bean.getTraceId());
+                        return apiHttpClientService.doHttpsGet(url, bean.getReqHeader());
                     } else {
-                        serviceRspData = apiHttpClientService.doHttpsGet(url, bean.getServiceGetReqData(),bean.getTraceId());
+                        return apiHttpClientService.doHttpsGet(url, bean.getServiceGetReqData(), bean.getReqHeader());
                     }
                 } else {
                     if (bean.getServiceGetReqData() == null) {
-                        serviceRspData = apiHttpClientService.doGet(url,bean.getTraceId());
+                        return apiHttpClientService.doGet(url, bean.getReqHeader());
                     } else {
-                        serviceRspData = apiHttpClientService.doGet(url, bean.getServiceGetReqData(),bean.getTraceId());
+                        return apiHttpClientService.doGet(url, bean.getServiceGetReqData(), bean.getReqHeader());
                     }
                 }
 
@@ -118,20 +134,17 @@ public class OpenApiReqHandler extends AbstractOpenApiHandler {
                 }
                 logger.info(String.format("{serviceId:%s ,reqData:%s }", bean.getApiId(), reqData));
 
-                String contentType = bean.getReqHeader().get(CONTENT_TYPE_KEY);
+                // String contentType =
+                // bean.getReqHeader().get(CONTENT_TYPE_KEY);
                 if (url.startsWith(CommonCodeConstants.HTTPS)) {
-                    serviceRspData = apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(), contentType,bean.getTraceId());
+                	serviceRspData= apiHttpClientService.doHttpsPost(url, bean.getServiceReqData(), bean.getReqHeader());
                 } else {
-                    serviceRspData = apiHttpClientService.doPost(url, bean.getServiceReqData(), contentType,bean.getTraceId());
+                	serviceRspData= apiHttpClientService.doPost(url, bean.getServiceReqData(), bean.getReqHeader());
                 }
-                if ("timeout".equals(serviceRspData)) {
-                    logger.error("invoke service: response is null!");
-                    throw new OpenApiException(OauthErrorEnum.ERROR.getErrCode(), OauthErrorEnum.ERROR.getErrMsg());
-                }
+      
             }
-        } else {
-            
         }
+        logger.info("serviceRspData="+serviceRspData);
         return serviceRspData;
     }
 }

@@ -3,13 +3,13 @@
  */
 package com.z.gateway.service;
 
-import com.z.gateway.common.entity.ApiInterface;
+import com.z.gateway.common.entity.ApiServerInfo;
 
-/**
+/**后端服务api server信息
  * @author Administrator
  *
  */
-public interface ApiInterfaceService {
+public interface ApiServerInfoService {
 
     /**
      * 根据apiId及版本号，获取一个后端服务api接口服务的信息
@@ -17,7 +17,7 @@ public interface ApiInterfaceService {
      * @param version
      * @return
      */
-    ApiInterface queryApiInterfaceByApiId(String apiId,String version); //这个接口方法暂定两个
+    ApiServerInfo queryApiInterfaceByApiId(ApiServerInfoReq req); //这个接口方法暂定两个
     
     
 }
