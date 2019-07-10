@@ -5,14 +5,12 @@ package com.z.gateway.service.support;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.z.gateway.common.entity.ApiServerInfo;
-import com.z.gateway.common.util.CommonCodeConstants;
 import com.z.gateway.service.ApiServerInfoReq;
 import com.z.gateway.service.ApiServerInfoService;
 import com.z.gateway.service.RegistryReaderService;

@@ -106,13 +106,17 @@
 			</list>
 		</property>
 	</bean>
-
+<!-- 
 	<bean id="zkRegistryReaderServiceImpl"
 		class="com.z.gateway.service.support.ZkDubboRegistryReaderServiceImpl"
 		init-method="init">
 		<property name="rootPath" value="${zk.rootpath}" />
 		<property name="zkServers" value="${zk.zkservers}" />
-	</bean>
+	</bean> -->
 
+	<bean id="zkRegistryReaderServiceImpl"
+		class="com.z.gateway.service.support.DemoRegistryReaderServiceImpl">
+	</bean> 
+	
 
 </beans>

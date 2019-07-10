@@ -138,3 +138,17 @@ springmvc 对于构建restful服务越来越简单，使用者也很多。并且
 
 ### ApiServerInfoService的实现类DefaultApiInterfaceServiceImpl
 	
+	
+## 如何快速运行demo
+
+1. 确定使用分支为master
+
+1.  DemoRegistryReaderServiceImpl配置
+		
+		因为本项目是作为后端服务的网关，为了更快的测试本网关，配置(在applicatonContext.xml中,默认已配好）
+					com.z.gateway.service.support.DemoRegistryReaderServiceImpl
+			
+		后端代理服务为http://www.sina.com
+
+1. mvn 打war包 gw.war
+2. 将war包放到tomcat中运行，在浏览器中然后访问 http://localhost:8080/gw/sina/ 看是否能够出来sina的页面即可。
