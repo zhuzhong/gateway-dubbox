@@ -16,7 +16,7 @@
 		<spring.version>4.2.1.RELEASE</spring.version>
 		<zkclient_version>0.1</zkclient_version>
 		<curator_version>2.5.0</curator_version>
-		<zookeeper_version>3.4.6</zookeeper_version>
+		<zookeeper_version>3.4.14</zookeeper_version>
 	</properties>
 	<dependencies>
 
